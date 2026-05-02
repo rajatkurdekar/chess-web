@@ -3,20 +3,27 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Chess Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: players
+    description: Player management
+  - name: games
+    description: Chess game operations
+  - name: matchmaking
+    description: Matchmaking operations
+  - name: analysis
+    description: Game analysis
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +31,490 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /players/guest:
+    post:
+      operationId: createGuest
+      tags: [players]
+      summary: Create a guest player session
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGuestBody"
+      responses:
+        "201":
+          description: Guest created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSession"
+
+  /players/register:
+    post:
+      operationId: registerPlayer
+      tags: [players]
+      summary: Register a new player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterPlayerBody"
+      responses:
+        "201":
+          description: Player registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSession"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Username taken
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /players/login:
+    post:
+      operationId: loginPlayer
+      tags: [players]
+      summary: Login a player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginPlayerBody"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSession"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /players/me:
+    get:
+      operationId: getMe
+      tags: [players]
+      summary: Get current player profile
+      responses:
+        "200":
+          description: Player profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /players/{playerId}:
+    get:
+      operationId: getPlayer
+      tags: [players]
+      summary: Get player by ID
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /players/{playerId}/games:
+    get:
+      operationId: getPlayerGames
+      tags: [players]
+      summary: Get player game history
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of games
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameListResponse"
+
+  /players/{playerId}/stats:
+    get:
+      operationId: getPlayerStats
+      tags: [players]
+      summary: Get player statistics
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerStats"
+
+  /players/{playerId}/rating-history:
+    get:
+      operationId: getPlayerRatingHistory
+      tags: [players]
+      summary: Get player rating history
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rating history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RatingPoint"
+
+  /games:
+    get:
+      operationId: listGames
+      tags: [games]
+      summary: List active/recent games
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, active, finished]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Games list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameListResponse"
+
+  /games/ai:
+    post:
+      operationId: createAiGame
+      tags: [games]
+      summary: Start a game against the AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAiGameBody"
+      responses:
+        "201":
+          description: Game created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+
+  /games/room:
+    post:
+      operationId: createRoom
+      tags: [games]
+      summary: Create a private room with invite link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoomBody"
+      responses:
+        "201":
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomResponse"
+
+  /games/room/{roomCode}/join:
+    post:
+      operationId: joinRoom
+      tags: [games]
+      summary: Join a private room by code
+      parameters:
+        - name: roomCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Joined room
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /games/{gameId}:
+    get:
+      operationId: getGame
+      tags: [games]
+      summary: Get game by ID
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Game
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /games/{gameId}/resign:
+    post:
+      operationId: resignGame
+      tags: [games]
+      summary: Resign from a game
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Resigned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+
+  /games/{gameId}/abort:
+    post:
+      operationId: abortGame
+      tags: [games]
+      summary: Abort a game (no rating impact, early only)
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Aborted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+
+  /games/{gameId}/draw-offer:
+    post:
+      operationId: offerDraw
+      tags: [games]
+      summary: Offer a draw
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Draw offered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+
+  /games/{gameId}/draw-accept:
+    post:
+      operationId: acceptDraw
+      tags: [games]
+      summary: Accept a draw offer
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Draw accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+
+  /games/{gameId}/moves:
+    get:
+      operationId: getGameMoves
+      tags: [games]
+      summary: Get all moves for a game
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Move list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Move"
+
+  /matchmaking/queue:
+    post:
+      operationId: joinQueue
+      tags: [matchmaking]
+      summary: Join the matchmaking queue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JoinQueueBody"
+      responses:
+        "200":
+          description: Joined queue or matched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueueResponse"
+
+    delete:
+      operationId: leaveQueue
+      tags: [matchmaking]
+      summary: Leave the matchmaking queue
+      responses:
+        "204":
+          description: Left queue
+
+  /analysis/{gameId}:
+    get:
+      operationId: getGameAnalysis
+      tags: [analysis]
+      summary: Get post-game analysis
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameAnalysis"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [players]
+      summary: Get top rated players
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  /stats/platform:
+    get:
+      operationId: getPlatformStats
+      tags: [health]
+      summary: Get platform-wide statistics
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +525,489 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    CreateGuestBody:
+      type: object
+      properties:
+        username:
+          type: string
+
+    RegisterPlayerBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    LoginPlayerBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    PlayerSession:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/Player"
+        token:
+          type: string
+      required:
+        - player
+        - token
+
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        rating:
+          type: integer
+        isGuest:
+          type: boolean
+        gamesPlayed:
+          type: integer
+        wins:
+          type: integer
+        losses:
+          type: integer
+        draws:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - username
+        - rating
+        - isGuest
+        - gamesPlayed
+        - wins
+        - losses
+        - draws
+        - createdAt
+
+    PlayerStats:
+      type: object
+      properties:
+        playerId:
+          type: string
+        totalGames:
+          type: integer
+        wins:
+          type: integer
+        losses:
+          type: integer
+        draws:
+          type: integer
+        winRate:
+          type: number
+        currentRating:
+          type: integer
+        peakRating:
+          type: integer
+        currentStreak:
+          type: integer
+        favoriteTimeControl:
+          type: ["string", "null"]
+        avgGameDuration:
+          type: ["number", "null"]
+      required:
+        - playerId
+        - totalGames
+        - wins
+        - losses
+        - draws
+        - winRate
+        - currentRating
+        - peakRating
+        - currentStreak
+        - favoriteTimeControl
+        - avgGameDuration
+
+    RatingPoint:
+      type: object
+      properties:
+        rating:
+          type: integer
+        gameId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        ratingChange:
+          type: integer
+      required:
+        - rating
+        - gameId
+        - timestamp
+        - ratingChange
+
+    TimeControl:
+      type: object
+      properties:
+        initialSeconds:
+          type: integer
+        incrementSeconds:
+          type: integer
+        label:
+          type: string
+      required:
+        - initialSeconds
+        - incrementSeconds
+        - label
+
+    Game:
+      type: object
+      properties:
+        id:
+          type: string
+        whitePlayerId:
+          type: string
+        blackPlayerId:
+          type: ["string", "null"]
+        whiteUsername:
+          type: string
+        blackUsername:
+          type: ["string", "null"]
+        whiteRating:
+          type: integer
+        blackRating:
+          type: ["integer", "null"]
+        status:
+          type: string
+          enum: [pending, active, finished, aborted]
+        result:
+          type: ["string", "null"]
+          enum: [white, black, draw, null]
+        resultReason:
+          type: ["string", "null"]
+        fen:
+          type: string
+        pgn:
+          type: string
+        timeControl:
+          $ref: "#/components/schemas/TimeControl"
+        whiteTimeMs:
+          type: integer
+        blackTimeMs:
+          type: integer
+        isAiGame:
+          type: boolean
+        aiDepth:
+          type: ["integer", "null"]
+        roomCode:
+          type: ["string", "null"]
+        drawOfferedBy:
+          type: ["string", "null"]
+        moveCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - whitePlayerId
+        - blackPlayerId
+        - whiteUsername
+        - blackUsername
+        - whiteRating
+        - blackRating
+        - status
+        - result
+        - resultReason
+        - fen
+        - pgn
+        - timeControl
+        - whiteTimeMs
+        - blackTimeMs
+        - isAiGame
+        - aiDepth
+        - roomCode
+        - drawOfferedBy
+        - moveCount
+        - createdAt
+        - updatedAt
+
+    GameDetail:
+      type: object
+      properties:
+        game:
+          $ref: "#/components/schemas/Game"
+        moves:
+          type: array
+          items:
+            $ref: "#/components/schemas/Move"
+      required:
+        - game
+        - moves
+
+    GameListResponse:
+      type: object
+      properties:
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/Game"
+        total:
+          type: integer
+      required:
+        - games
+        - total
+
+    Move:
+      type: object
+      properties:
+        id:
+          type: string
+        gameId:
+          type: string
+        moveNumber:
+          type: integer
+        san:
+          type: string
+        uci:
+          type: string
+        fen:
+          type: string
+        whiteClockMs:
+          type: integer
+        blackClockMs:
+          type: integer
+        playedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - gameId
+        - moveNumber
+        - san
+        - uci
+        - fen
+        - whiteClockMs
+        - blackClockMs
+        - playedAt
+
+    CreateAiGameBody:
+      type: object
+      properties:
+        playerId:
+          type: string
+        playerColor:
+          type: string
+          enum: [white, black, random]
+        timeControl:
+          $ref: "#/components/schemas/TimeControl"
+        aiDepth:
+          type: integer
+          default: 10
+      required:
+        - playerId
+        - playerColor
+        - timeControl
+
+    CreateRoomBody:
+      type: object
+      properties:
+        playerId:
+          type: string
+        timeControl:
+          $ref: "#/components/schemas/TimeControl"
+        playerColor:
+          type: string
+          enum: [white, black, random]
+      required:
+        - playerId
+        - timeControl
+
+    RoomResponse:
+      type: object
+      properties:
+        game:
+          $ref: "#/components/schemas/Game"
+        roomCode:
+          type: string
+        inviteUrl:
+          type: string
+      required:
+        - game
+        - roomCode
+        - inviteUrl
+
+    JoinQueueBody:
+      type: object
+      properties:
+        playerId:
+          type: string
+        timeControl:
+          $ref: "#/components/schemas/TimeControl"
+      required:
+        - playerId
+        - timeControl
+
+    QueueResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [queued, matched]
+        gameId:
+          type: ["string", "null"]
+        queuePosition:
+          type: ["integer", "null"]
+      required:
+        - status
+        - gameId
+        - queuePosition
+
+    AnalyzedMove:
+      type: object
+      properties:
+        moveNumber:
+          type: integer
+        san:
+          type: string
+        classification:
+          type: string
+          enum: [brilliant, great, best, good, inaccuracy, mistake, blunder, book]
+        evalBefore:
+          type: ["number", "null"]
+        evalAfter:
+          type: ["number", "null"]
+        bestMove:
+          type: ["string", "null"]
+        bestMoveEval:
+          type: ["number", "null"]
+      required:
+        - moveNumber
+        - san
+        - classification
+        - evalBefore
+        - evalAfter
+        - bestMove
+        - bestMoveEval
+
+    GameAnalysis:
+      type: object
+      properties:
+        gameId:
+          type: string
+        analyzedMoves:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnalyzedMove"
+        whiteAccuracy:
+          type: number
+        blackAccuracy:
+          type: number
+        whiteBrilliant:
+          type: integer
+        whiteGreat:
+          type: integer
+        whiteBest:
+          type: integer
+        whiteGood:
+          type: integer
+        whiteInaccuracies:
+          type: integer
+        whiteMistakes:
+          type: integer
+        whiteBlunders:
+          type: integer
+        blackBrilliant:
+          type: integer
+        blackGreat:
+          type: integer
+        blackBest:
+          type: integer
+        blackGood:
+          type: integer
+        blackInaccuracies:
+          type: integer
+        blackMistakes:
+          type: integer
+        blackBlunders:
+          type: integer
+      required:
+        - gameId
+        - analyzedMoves
+        - whiteAccuracy
+        - blackAccuracy
+        - whiteBrilliant
+        - whiteGreat
+        - whiteBest
+        - whiteGood
+        - whiteInaccuracies
+        - whiteMistakes
+        - whiteBlunders
+        - blackBrilliant
+        - blackGreat
+        - blackBest
+        - blackGood
+        - blackInaccuracies
+        - blackMistakes
+        - blackBlunders
+
+    LeaderboardEntry:
+      type: object
+      properties:
+        rank:
+          type: integer
+        playerId:
+          type: string
+        username:
+          type: string
+        rating:
+          type: integer
+        gamesPlayed:
+          type: integer
+        winRate:
+          type: number
+      required:
+        - rank
+        - playerId
+        - username
+        - rating
+        - gamesPlayed
+        - winRate
+
+    PlatformStats:
+      type: object
+      properties:
+        totalPlayers:
+          type: integer
+        totalGames:
+          type: integer
+        activeGames:
+          type: integer
+        gamesPlayedToday:
+          type: integer
+        averageRating:
+          type: integer
+      required:
+        - totalPlayers
+        - totalGames
+        - activeGames
+        - gamesPlayedToday
+        - averageRating
