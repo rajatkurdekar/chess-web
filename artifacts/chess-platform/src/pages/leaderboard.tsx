@@ -1,15 +1,35 @@
 import { Layout } from "@/components/layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useGetLeaderboard } from "@workspace/api-client-react";
-import { Trophy, TrendingUp, Minus } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { Link } from "wouter";
+import { cn } from "@/lib/utils";
 
 function RankBadge({ rank }: { rank: number }) {
-  if (rank === 1) return <span className="text-2xl">🥇</span>;
-  if (rank === 2) return <span className="text-2xl">🥈</span>;
-  if (rank === 3) return <span className="text-2xl">🥉</span>;
-  return <span className="text-lg font-bold text-muted-foreground w-8 text-center">#{rank}</span>;
+  if (rank === 1) return <span className="text-2xl leading-none">🥇</span>;
+  if (rank === 2) return <span className="text-2xl leading-none">🥈</span>;
+  if (rank === 3) return <span className="text-2xl leading-none">🥉</span>;
+  return (
+    <span className="text-sm font-bold text-muted-foreground font-mono">
+      #{rank}
+    </span>
+  );
+}
+
+function WinBar({ winRate }: { winRate: number }) {
+  const pct = Math.round(winRate * 100);
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-primary rounded-full transition-all"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="text-xs font-bold text-foreground/70 tabular-nums w-7">{pct}%</span>
+    </div>
+  );
 }
 
 export default function Leaderboard() {
@@ -17,60 +37,82 @@ export default function Leaderboard() {
 
   return (
     <Layout>
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-3xl mx-auto space-y-5">
+
+        {/* Header */}
         <div className="flex items-center gap-3">
-          <Trophy className="w-8 h-8 text-accent" />
+          <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center">
+            <Trophy className="w-5 h-5 text-accent" />
+          </div>
           <div>
-            <h1 className="text-3xl font-bold">Leaderboard</h1>
-            <p className="text-muted-foreground">Top rated players on the platform</p>
+            <h1 className="text-2xl font-bold text-foreground">Leaderboard</h1>
+            <p className="text-sm text-muted-foreground">Top rated players on the platform</p>
           </div>
         </div>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-muted-foreground grid grid-cols-[3rem_1fr_repeat(3,8rem)] gap-4">
-              <span>Rank</span>
-              <span>Player</span>
-              <span className="text-right">Rating</span>
-              <span className="text-right">Games</span>
-              <span className="text-right">Win %</span>
-            </CardTitle>
-          </CardHeader>
+        <Card className="glass-card border-card-border overflow-hidden">
+          {/* Table header */}
+          <div className="grid grid-cols-[3rem_1fr_6rem_5rem_10rem] gap-4 px-5 py-3 border-b border-white/[0.05]">
+            {["Rank", "Player", "Rating", "Games", "Win Rate"].map((h, i) => (
+              <div key={h} className={cn("text-xs font-bold uppercase tracking-wider text-muted-foreground/70", i > 1 && "text-right")}>
+                {h}
+              </div>
+            ))}
+          </div>
+
           <CardContent className="p-0">
             {isLoading ? (
-              <div className="p-6 space-y-3">
+              <div className="p-5 space-y-2">
                 {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="h-12 bg-muted/40 rounded animate-pulse" />
+                  <div key={i} className="h-14 bg-muted/20 rounded-lg animate-pulse" />
                 ))}
               </div>
             ) : (
-              <div className="divide-y divide-border">
-                {(players ?? []).map((p: any) => (
+              <div className="divide-y divide-white/[0.04]">
+                {(players ?? []).map((p: any, idx: number) => (
                   <Link
                     key={p.playerId}
                     href={`/profile/${p.playerId}`}
-                    className="grid grid-cols-[3rem_1fr_repeat(3,8rem)] gap-4 px-6 py-4 items-center hover:bg-muted/20 transition-colors group"
+                    className={cn(
+                      "grid grid-cols-[3rem_1fr_6rem_5rem_10rem] gap-4 px-5 py-3.5 items-center",
+                      "hover:bg-white/[0.03] transition-all group cursor-pointer",
+                      idx < 3 && "bg-gradient-to-r from-accent/[0.03] to-transparent"
+                    )}
                   >
-                    <div className="flex justify-center">
+                    <div className="flex justify-center items-center h-8">
                       <RankBadge rank={p.rank} />
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary text-lg">
+
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={cn(
+                        "w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0 transition-all",
+                        idx === 0 ? "bg-amber-500/20 text-amber-400 border border-amber-400/30" :
+                        idx === 1 ? "bg-zinc-400/15 text-zinc-300 border border-zinc-400/25" :
+                        idx === 2 ? "bg-orange-600/15 text-orange-400 border border-orange-400/25" :
+                        "bg-primary/10 text-primary border border-primary/20"
+                      )}>
                         {p.username.charAt(0).toUpperCase()}
                       </div>
-                      <div>
-                        <div className="font-semibold group-hover:text-primary transition-colors">{p.username}</div>
-                        <div className="text-xs text-muted-foreground">{p.gamesPlayed} games played</div>
+                      <div className="min-w-0">
+                        <div className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
+                          {p.username}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground/70 truncate">
+                          {p.gamesPlayed > 0 ? `${p.gamesPlayed} games` : "No games yet"}
+                        </div>
                       </div>
                     </div>
+
                     <div className="text-right">
-                      <span className="font-bold text-lg text-accent">{p.rating}</span>
+                      <span className="gradient-text-gold font-bold text-base tabular-nums">{p.rating}</span>
                     </div>
-                    <div className="text-right text-muted-foreground">{p.gamesPlayed}</div>
-                    <div className="text-right">
-                      <Badge variant="outline" className="text-emerald-400 border-emerald-400/30 bg-emerald-400/5">
-                        {Math.round((p.winRate ?? 0) * 100)}%
-                      </Badge>
+
+                    <div className="text-right text-sm text-muted-foreground tabular-nums">
+                      {p.gamesPlayed}
+                    </div>
+
+                    <div className="flex justify-end">
+                      <WinBar winRate={p.winRate ?? 0} />
                     </div>
                   </Link>
                 ))}

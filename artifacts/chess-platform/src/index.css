@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@700;800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -10,78 +11,223 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-card-border: var(--card-border);
-
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover-border: var(--popover-border);
-
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-
   --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Playfair Display', serif;
   --radius: 0.5rem;
 }
 
 :root, .dark {
-  /* Force Dark Mode */
-  --background: #0B0F19; /* Very dark slate */
-  --foreground: #F1F5F9;
-  --border: #1E293B;
-  --input: #1E293B;
-  --ring: #F59E0B; /* Amber/Gold */
+  /* ── Core Background ── */
+  --background: #0D0F17;
+  --foreground: #E8ECF0;
 
-  --card: #151C2C;
-  --card-foreground: #F1F5F9;
-  --card-border: #1E293B;
+  /* ── Surfaces ── */
+  --card: #13161F;
+  --card-foreground: #E8ECF0;
+  --card-border: rgba(255,255,255,0.07);
 
-  --popover: #151C2C;
-  --popover-foreground: #F1F5F9;
-  --popover-border: #1E293B;
+  --popover: #1A1D29;
+  --popover-foreground: #E8ECF0;
+  --popover-border: rgba(255,255,255,0.10);
 
-  --primary: #10B981; /* Emerald */
-  --primary-foreground: #022C22;
+  /* ── Inputs ── */
+  --border: rgba(255,255,255,0.08);
+  --input: #1A1D29;
+  --ring: #22C55E;
 
-  --secondary: #334155;
-  --secondary-foreground: #F8FAFC;
+  /* ── Brand ── */
+  --primary: #22C55E;
+  --primary-foreground: #052e16;
 
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
+  /* ── Secondary ── */
+  --secondary: #1E2130;
+  --secondary-foreground: #CBD5E1;
 
-  --accent: #F59E0B; /* Amber/Gold */
+  /* ── Muted ── */
+  --muted: #1A1D29;
+  --muted-foreground: #8B95A1;
+
+  /* ── Accent (Gold) ── */
+  --accent: #F59E0B;
   --accent-foreground: #451A03;
 
+  /* ── Destructive ── */
   --destructive: #EF4444;
-  --destructive-foreground: #450A0A;
+  --destructive-foreground: #FEF2F2;
 
-  /* Chess Board Colors */
-  --board-light: #f0d9b5;
-  --board-dark: #b58863;
-  --board-highlight: rgba(16, 185, 129, 0.5); /* Emerald tint */
-  --board-last-move: rgba(245, 158, 11, 0.4); /* Amber tint */
-  --board-check: rgba(239, 68, 68, 0.8);
+  /* ── Board Colors ── */
+  --board-light: #F0D9B5;
+  --board-dark: #B58863;
+  --board-selected: rgba(20,185,140,0.55);
+  --board-last-from: rgba(246,166,35,0.45);
+  --board-last-to: rgba(246,166,35,0.45);
+  --board-check: rgba(220,38,38,0.80);
+  --board-legal-dot: rgba(0,0,0,0.18);
+  --board-legal-capture: rgba(0,0,0,0.12);
+
+  /* ── Glow Effects ── */
+  --glow-primary: rgba(34,197,94,0.12);
+  --glow-accent: rgba(245,158,11,0.12);
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+
+  h1, h2, h3, h4 { letter-spacing: -0.02em; }
+}
+
+/* ─── Chess Board ──────────────────────────────────────────────────────────── */
+.board-shadow {
+  box-shadow:
+    0 0 0 3px #0D0F17,
+    0 0 0 5px rgba(255,255,255,0.06),
+    0 24px 64px rgba(0,0,0,0.7),
+    0 8px 24px rgba(0,0,0,0.5);
+}
+
+.piece-lift {
+  transition: transform 0.1s ease;
+}
+.piece-lift:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+}
+
+/* ─── Glassmorphism Cards ───────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(19,22,31,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* ─── Premium Clock ──────────────────────────────────────────────────────────── */
+.clock-active {
+  background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05));
+  border-color: rgba(34,197,94,0.5);
+  color: #22C55E;
+  box-shadow: 0 0 20px rgba(34,197,94,0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.clock-low {
+  background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05));
+  border-color: rgba(239,68,68,0.6);
+  color: #F87171;
+  animation: clock-pulse 1s ease-in-out infinite;
+}
+
+@keyframes clock-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(239,68,68,0.3); }
+  50% { box-shadow: 0 0 20px rgba(239,68,68,0.6); }
+}
+
+/* ─── Gradient Text ─────────────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #22C55E 0%, #10B981 50%, #6EE7B7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #FDE68A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Scroll ────────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ─── Animated Background Pattern ──────────────────────────────────────────── */
+.chess-pattern-bg {
+  background-image:
+    linear-gradient(rgba(13,15,23,0.97), rgba(13,15,23,0.97)),
+    repeating-conic-gradient(rgba(255,255,255,0.015) 0% 25%, transparent 0% 50%);
+  background-size: 100%, 60px 60px;
+}
+
+/* ─── Move Quality Colors ───────────────────────────────────────────────────── */
+.move-brilliant { color: #1BACA6; }
+.move-excellent  { color: #96BC4B; }
+.move-good       { color: #96BC4B; }
+.move-inaccuracy { color: #F6C947; }
+.move-mistake    { color: #E58F2A; }
+.move-blunder    { color: #CA3431; }
+
+/* ─── Eval Bar ───────────────────────────────────────────────────────────────── */
+.eval-bar {
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Page Transitions ───────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* ─── Hero Section ───────────────────────────────────────────────────────────── */
+.hero-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(34,197,94,0.08) 0%,
+    transparent 70%
+  );
+}
+
+/* ─── Rank/File Labels ───────────────────────────────────────────────────────── */
+.board-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  user-select: none;
+  line-height: 1;
+}
+
+/* ─── Active Player Indicator ────────────────────────────────────────────────── */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.live-dot {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* ─── Card hover lift ────────────────────────────────────────────────────────── */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
 }

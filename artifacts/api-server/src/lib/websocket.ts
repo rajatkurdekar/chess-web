@@ -9,6 +9,10 @@ import {
   getActiveGame,
 } from "./game-manager.js";
 import { logger } from "./logger.js";
+import { auditMove, clearGameHistory } from "./anti-cheat.js";
+
+// Track last-move timestamp per game for anti-cheat timing analysis
+const gameMoveTimestamps = new Map<string, number>();
 
 export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
   const io = new SocketIOServer(httpServer, {
@@ -38,10 +42,7 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
 
         registerSocket(socket.id, gameId, color);
 
-        socket.emit("game:state", {
-          game,
-          color,
-        });
+        socket.emit("game:state", { game, color });
 
         logger.info({ socketId: socket.id, gameId, color }, "Player joined game");
       } catch (err) {
@@ -50,8 +51,46 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
       }
     });
 
-    socket.on("game:move", async ({ gameId, playerId, uci }: { gameId: string; playerId: string; uci: string }) => {
+    socket.on("game:move", async ({
+      gameId,
+      playerId,
+      uci,
+      clientTime,
+    }: {
+      gameId: string;
+      playerId: string;
+      uci: string;
+      clientTime?: number;
+    }) => {
       try {
+        // ── Anti-cheat: timing analysis ──────────────────────────────────
+        const serverReceived = Date.now();
+        const lastTs = gameMoveTimestamps.get(gameId);
+        const thinkingTimeMs = lastTs ? serverReceived - lastTs : 999_999;
+        gameMoveTimestamps.set(gameId, serverReceived);
+
+        const [gameRow] = await db.select().from(gamesTable).where(eq(gamesTable.id, gameId));
+        if (gameRow) {
+          const chessboard = new (await import("chess.js")).Chess(gameRow.fen);
+          const auditResult = auditMove({
+            gameId,
+            playerId,
+            moveNumber: Math.floor(chessboard.history().length / 2) + 1,
+            thinkingTimeMs,
+            fen: gameRow.fen,
+            uci,
+            isAiGame: !!gameRow.blackPlayerId?.startsWith("ai_") || gameRow.blackPlayerId === null,
+          });
+
+          if (auditResult.suspicious) {
+            logger.warn(
+              { gameId, playerId, flags: auditResult.flags, riskScore: auditResult.riskScore },
+              "Anti-cheat: suspicious activity flagged"
+            );
+          }
+        }
+
+        // ── Process move ─────────────────────────────────────────────────
         const result = await processMove(gameId, playerId, uci);
 
         if (!result.success) {
@@ -66,6 +105,8 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
 
         if (result.moveResult?.isGameOver) {
           const [game] = await db.select().from(gamesTable).where(eq(gamesTable.id, gameId));
+          clearGameHistory(gameId);
+          gameMoveTimestamps.delete(gameId);
           io.to(`game:${gameId}`).emit("game:over", {
             gameId,
             result: game?.result,
@@ -73,7 +114,7 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
           });
         }
 
-        logger.info({ gameId, playerId, uci, san: result.moveResult?.san }, "Move processed");
+        logger.info({ gameId, playerId, uci, san: result.moveResult?.san, thinkingTimeMs }, "Move processed");
       } catch (err) {
         logger.error({ err, gameId }, "Error processing move");
         socket.emit("error", { message: "Failed to process move" });
@@ -94,6 +135,9 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
           resultReason: "resignation",
         }).where(eq(gamesTable.id, gameId));
 
+        clearGameHistory(gameId);
+        gameMoveTimestamps.delete(gameId);
+
         io.to(`game:${gameId}`).emit("game:over", {
           gameId,
           result,
@@ -108,6 +152,7 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
       try {
         await db.update(gamesTable).set({ drawOfferedBy: playerId }).where(eq(gamesTable.id, gameId));
         io.to(`game:${gameId}`).emit("game:draw-offered", { gameId, offeredBy: playerId });
+        logger.info({ gameId, playerId }, "Draw offered");
       } catch (err) {
         logger.error({ err, gameId }, "Error offering draw");
       }
@@ -124,6 +169,9 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
           resultReason: "agreement",
           drawOfferedBy: null,
         }).where(eq(gamesTable.id, gameId));
+
+        clearGameHistory(gameId);
+        gameMoveTimestamps.delete(gameId);
 
         io.to(`game:${gameId}`).emit("game:over", {
           gameId,
@@ -155,11 +203,7 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
     socket.on("game:resync", async ({ gameId }: { gameId: string }) => {
       const [game] = await db.select().from(gamesTable).where(eq(gamesTable.id, gameId));
       if (!game) return;
-
-      socket.emit("game:state", {
-        game,
-        resync: true,
-      });
+      socket.emit("game:state", { game, resync: true });
     });
 
     socket.on("disconnect", () => {

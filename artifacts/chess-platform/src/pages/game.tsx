@@ -9,67 +9,173 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Flag, BarChart2, Home, AlertTriangle } from "lucide-react";
+import { Flag, BarChart2, Home, AlertTriangle, Handshake, RotateCcw, Wifi, WifiOff } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+// ─── Live Clock ──────────────────────────────────────────────────────────────
 
 function Clock({ ms, active }: { ms: number; active: boolean }) {
   const [remaining, setRemaining] = useState(ms);
-  const lastTick = useRef<number>(Date.now());
+  const lastTick = useRef(Date.now());
   const raf = useRef<number | null>(null);
 
-  useEffect(() => {
-    setRemaining(ms);
-    lastTick.current = Date.now();
-  }, [ms]);
+  useEffect(() => { setRemaining(ms); lastTick.current = Date.now(); }, [ms]);
 
   useEffect(() => {
-    if (!active) {
-      if (raf.current) cancelAnimationFrame(raf.current);
-      return;
-    }
+    if (!active) { if (raf.current) cancelAnimationFrame(raf.current); return; }
     const tick = () => {
       const now = Date.now();
-      const elapsed = now - lastTick.current;
+      setRemaining(r => Math.max(0, r - (now - lastTick.current)));
       lastTick.current = now;
-      setRemaining((r) => Math.max(0, r - elapsed));
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
     return () => { if (raf.current) cancelAnimationFrame(raf.current); };
   }, [active]);
 
-  const totalSec = Math.ceil(remaining / 1000);
-  const min = Math.floor(totalSec / 60);
-  const sec = totalSec % 60;
-  const isLow = remaining < 30000;
+  const isLow = remaining < 30_000;
+  const isVeryLow = remaining < 10_000;
+  const min = Math.floor(remaining / 60_000);
+  const sec = Math.floor((remaining % 60_000) / 1_000);
+  const tenths = Math.floor((remaining % 1_000) / 100);
+  const showTenths = remaining < 20_000;
 
   return (
-    <span className={`text-2xl font-mono tabular-nums px-4 py-1 rounded border ${active ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-foreground"} ${isLow && active ? "text-red-400 border-red-400/60 bg-red-400/10 animate-pulse" : ""}`}>
+    <div className={cn(
+      "font-mono tabular-nums text-2xl font-bold px-4 py-2 rounded-lg border transition-all duration-300",
+      active
+        ? isVeryLow
+          ? "clock-low"
+          : isLow
+          ? "border-amber-500/50 bg-amber-500/10 text-amber-300"
+          : "clock-active"
+        : "border-border bg-card text-foreground/70"
+    )}>
       {min}:{sec.toString().padStart(2, "0")}
-    </span>
+      {showTenths && <span className="text-sm opacity-70">.{tenths}</span>}
+    </div>
   );
 }
 
-function PlayerRow({ username, rating, isActive, timeMs, isBottom }: { username: string; rating?: number | null; isActive: boolean; timeMs: number; isBottom?: boolean }) {
+// ─── Player Bar ──────────────────────────────────────────────────────────────
+
+function PlayerBar({
+  username, rating, isActive, timeMs, isBottom, capturedPieces,
+}: {
+  username: string; rating?: number | null; isActive: boolean;
+  timeMs: number; isBottom?: boolean; capturedPieces?: React.ReactNode;
+}) {
   return (
-    <div className="w-full flex justify-between items-center px-2 max-w-[600px]">
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-md flex items-center justify-center font-bold text-lg ${isBottom ? "bg-primary/20 text-primary border border-primary/50" : "bg-muted text-foreground border border-border"}`}>
+    <div className={cn(
+      "w-full flex items-center justify-between gap-3 px-1 max-w-[580px]",
+      isBottom ? "mt-1" : "mb-1"
+    )}>
+      <div className="flex items-center gap-2.5 min-w-0">
+        <div className={cn(
+          "w-9 h-9 rounded-lg flex items-center justify-center font-bold text-base flex-shrink-0 transition-all",
+          isActive
+            ? "bg-primary/20 text-primary border border-primary/40 shadow-[0_0_12px_rgba(34,197,94,0.2)]"
+            : "bg-muted/50 text-foreground/70 border border-border"
+        )}>
           {(username ?? "?").charAt(0).toUpperCase()}
         </div>
-        <div>
-          <div className="font-semibold">{username ?? "Opponent"}</div>
-          {rating != null && <div className="text-xs text-muted-foreground">{rating}</div>}
+        <div className="min-w-0">
+          <div className="font-semibold text-sm truncate text-foreground">{username ?? "Opponent"}</div>
+          <div className="flex items-center gap-1.5">
+            {rating != null && <span className="text-[11px] text-muted-foreground font-mono">{rating}</span>}
+            {capturedPieces}
+          </div>
         </div>
-        {isActive && <div className="w-2 h-2 rounded-full bg-primary animate-pulse ml-1" />}
+        {isActive && <div className="w-1.5 h-1.5 rounded-full bg-primary live-dot flex-shrink-0" />}
       </div>
       <Clock ms={timeMs} active={isActive} />
     </div>
   );
 }
 
+// ─── Move List ────────────────────────────────────────────────────────────────
+
+function MoveList({ moves }: { moves: Array<{ san: string; uci: string }> }) {
+  const listRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
+  }, [moves.length]);
+
+  const pairs = [];
+  for (let i = 0; i < moves.length; i += 2) {
+    pairs.push({ num: Math.floor(i / 2) + 1, white: moves[i], black: moves[i + 1] });
+  }
+
+  return (
+    <div ref={listRef} className="overflow-y-auto flex-1 min-h-0 font-mono text-sm px-1">
+      {pairs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground/50">
+          <span className="text-3xl">♟</span>
+          <span className="text-xs">Make the first move</span>
+        </div>
+      ) : (
+        <div className="space-y-0.5">
+          {pairs.map(({ num, white, black }) => (
+            <div key={num} className="grid grid-cols-[2rem_1fr_1fr] gap-x-1 group">
+              <span className="text-muted-foreground/60 text-right text-xs py-1">{num}.</span>
+              <span className="px-1.5 py-1 rounded hover:bg-white/5 cursor-default text-foreground/90 font-medium transition-colors">{white.san}</span>
+              {black ? (
+                <span className="px-1.5 py-1 rounded hover:bg-white/5 cursor-default text-foreground/80 transition-colors">{black.san}</span>
+              ) : <span />}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Game-Over Overlay ────────────────────────────────────────────────────────
+
+function GameOverOverlay({ game, isWhitePlayer, gameId, onAnalyze, onHome }: {
+  game: Game; isWhitePlayer: boolean; gameId: string;
+  onAnalyze: () => void; onHome: () => void;
+}) {
+  const myColor = isWhitePlayer ? "white" : "black";
+  const won = game.result === myColor;
+  const drew = game.result === "draw";
+
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center rounded-sm z-50 backdrop-blur-md bg-black/65">
+      <div className="text-center space-y-3 p-6">
+        <div className="text-6xl mb-2">{drew ? "🤝" : won ? "🏆" : "💔"}</div>
+        <div className="font-display text-3xl font-bold text-white">
+          {drew ? "Draw" : won ? "Victory!" : "Defeat"}
+        </div>
+        <div className="text-base text-white/70 capitalize">
+          {game.result === "white" ? `${game.whiteUsername} wins` :
+           game.result === "black" ? `${game.blackUsername ?? "Opponent"} wins` : "½–½"}
+        </div>
+        {game.resultReason && (
+          <div className="text-sm text-white/50 capitalize bg-white/5 rounded-full px-3 py-1 inline-block">
+            {game.resultReason}
+          </div>
+        )}
+        <div className="flex gap-2 justify-center pt-2">
+          <Button size="sm" onClick={onAnalyze} className="bg-primary hover:bg-primary/90 font-semibold">
+            <BarChart2 className="w-4 h-4 mr-1.5" /> Analyse
+          </Button>
+          <Button size="sm" variant="outline" onClick={onHome} className="border-white/20 hover:bg-white/10 text-white">
+            <Home className="w-4 h-4 mr-1.5" /> Home
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 function fenTurn(fen: string): "white" | "black" {
   return fen.split(" ")[1] === "w" ? "white" : "black";
 }
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function GamePage() {
   const [, params] = useRoute("/game/:id");
@@ -77,27 +183,28 @@ export default function GamePage() {
   const { player } = useAuth();
   const [, setLocation] = useLocation();
   const [showResignConfirm, setShowResignConfirm] = useState(false);
+  const [capturedTop, setCapturedTop] = useState<string[]>([]);
+  const [capturedBot, setCapturedBot] = useState<string[]>([]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: gameDetail } = useGetGame(gameId || "", { query: { enabled: !!gameId } } as any);
-  const { gameState, makeMove, resign, connected, moves: socketMoves } = useGameSocket(gameId, player?.id);
+  const { gameState, makeMove, resign, drawOffer, drawAccept, drawDecline, drawOfferFrom, connected, moves: socketMoves } = useGameSocket(gameId, player?.id);
 
-  const baseGame: Game | undefined = gameDetail?.game;
+  const baseGame = gameDetail?.game;
   const game: Game | undefined = gameState ?? baseGame;
-  const socketMoveList = socketMoves;
+  const movesToShow = socketMoves.length > 0 ? socketMoves : (gameDetail?.moves ?? []);
 
   const handleResign = useCallback(() => {
     if (!showResignConfirm) { setShowResignConfirm(true); return; }
-    resign();
-    setShowResignConfirm(false);
+    resign(); setShowResignConfirm(false);
   }, [showResignConfirm, resign]);
 
   if (!game) {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-muted-foreground">Loading game...</p>
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-muted-foreground text-sm">Loading game…</p>
         </div>
       </Layout>
     );
@@ -105,6 +212,7 @@ export default function GamePage() {
 
   const isWhitePlayer = player?.id === game.whitePlayerId;
   const isBlackPlayer = player?.id === game.blackPlayerId;
+  const isSpectator = !isWhitePlayer && !isBlackPlayer;
   const orientation = isBlackPlayer ? "black" : "white";
   const currentTurn = fenTurn(game.fen);
   const isMyTurn = game.status === "active" && (
@@ -113,141 +221,202 @@ export default function GamePage() {
   );
   const isGameOver = game.status === "finished" || game.status === "aborted";
 
-  const whiteTimeMs = game.whiteTimeMs ?? (game.timeControl.initialSeconds * 1000);
-  const blackTimeMs = game.blackTimeMs ?? (game.timeControl.initialSeconds * 1000);
+  const whiteTimeMs = game.whiteTimeMs ?? game.timeControl.initialSeconds * 1000;
+  const blackTimeMs = game.blackTimeMs ?? game.timeControl.initialSeconds * 1000;
 
-  const topUsername = orientation === "white" ? (game.blackUsername ?? "Opponent") : game.whiteUsername;
+  const topName = orientation === "white" ? (game.blackUsername ?? "Opponent") : game.whiteUsername;
   const topRating = orientation === "white" ? game.blackRating : game.whiteRating;
   const topTimeMs = orientation === "white" ? blackTimeMs : whiteTimeMs;
-  const topActive = game.status === "active" && (orientation === "white" ? currentTurn === "black" : currentTurn === "white");
+  const topActive = !isGameOver && (orientation === "white" ? currentTurn === "black" : currentTurn === "white");
 
-  const botUsername = orientation === "white" ? game.whiteUsername : (game.blackUsername ?? "Opponent");
+  const botName = orientation === "white" ? game.whiteUsername : (game.blackUsername ?? "Opponent");
   const botRating = orientation === "white" ? game.whiteRating : game.blackRating;
   const botTimeMs = orientation === "white" ? whiteTimeMs : blackTimeMs;
-  const botActive = game.status === "active" && (orientation === "white" ? currentTurn === "white" : currentTurn === "black");
+  const botActive = !isGameOver && (orientation === "white" ? currentTurn === "white" : currentTurn === "black");
 
-  const resultText = isGameOver
-    ? game.result === "draw" ? "½-½ Draw" :
-      game.result === "white" ? `1-0 · ${game.whiteUsername} wins` :
-      game.result === "black" ? `0-1 · ${game.blackUsername ?? "Opponent"} wins` : "Game Over"
+  const lastMove = movesToShow.length > 0
+    ? { from: movesToShow[movesToShow.length - 1].uci.slice(0, 2), to: movesToShow[movesToShow.length - 1].uci.slice(2, 4) }
     : null;
 
-  const movesToShow = socketMoveList.length > 0 ? socketMoveList : (gameDetail?.moves ?? []);
+  const handleCapturedUpdate = (wc: string[], bc: string[]) => {
+    if (orientation === "white") { setCapturedTop(bc); setCapturedBot(wc); }
+    else { setCapturedTop(wc); setCapturedBot(bc); }
+  };
 
   return (
     <Layout>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        <div className="lg:col-span-2 flex flex-col items-center gap-3">
-          <PlayerRow username={topUsername} rating={topRating} isActive={topActive} timeMs={topTimeMs} />
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5 max-w-5xl mx-auto">
 
-          <div className="relative w-full max-w-[600px]">
+        {/* ── Left: Board area ── */}
+        <div className="flex flex-col items-center">
+          <PlayerBar
+            username={topName} rating={topRating}
+            isActive={topActive} timeMs={topTimeMs}
+          />
+
+          <div className="relative w-full">
             <ChessBoard
               fen={game.fen}
               orientation={orientation}
-              onMove={makeMove}
+              onMove={(uci, from, to) => makeMove(uci)}
               disabled={!isMyTurn || isGameOver}
+              lastMove={lastMove}
+              onCapturedUpdate={handleCapturedUpdate}
             />
-
             {isGameOver && (
-              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center rounded gap-4 backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="text-4xl mb-2">{game.result === "draw" ? "🤝" : game.result === (isWhitePlayer ? "white" : "black") ? "🏆" : "😔"}</div>
-                  <div className="text-2xl font-bold text-white">{resultText}</div>
-                  <div className="text-muted-foreground capitalize mt-1">{game.resultReason}</div>
-                </div>
-                <div className="flex gap-3">
-                  <Button size="sm" onClick={() => setLocation(`/analysis/${gameId}`)}>
-                    <BarChart2 className="w-4 h-4 mr-2" /> Analyze
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setLocation("/")}>
-                    <Home className="w-4 h-4 mr-2" /> Home
-                  </Button>
-                </div>
-              </div>
+              <GameOverOverlay
+                game={game}
+                isWhitePlayer={isWhitePlayer}
+                gameId={gameId!}
+                onAnalyze={() => setLocation(`/analysis/${gameId}`)}
+                onHome={() => setLocation("/")}
+              />
             )}
           </div>
 
-          <PlayerRow username={botUsername} rating={botRating} isActive={botActive} timeMs={botTimeMs} isBottom />
+          <PlayerBar
+            username={botName} rating={botRating}
+            isActive={botActive} timeMs={botTimeMs}
+            isBottom
+          />
+
+          {/* Mobile controls */}
+          {!isGameOver && !isSpectator && (
+            <div className="flex gap-2 mt-3 lg:hidden w-full max-w-[580px]">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 text-destructive border-destructive/30 hover:bg-destructive/10"
+                onClick={handleResign}
+              >
+                <Flag className="w-3.5 h-3.5 mr-1.5" />
+                {showResignConfirm ? "Confirm Resign" : "Resign"}
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => drawOffer()}>
+                <Handshake className="w-3.5 h-3.5 mr-1.5" /> Draw
+              </Button>
+            </div>
+          )}
         </div>
 
-        <div className="space-y-4">
-          <Card>
-            <CardContent className="p-4 space-y-3">
+        {/* ── Right: Sidebar ── */}
+        <div className="flex flex-col gap-3 min-h-0">
+
+          {/* Connection + game info */}
+          <Card className="glass-card border-card-border">
+            <CardContent className="p-3 space-y-2.5">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold">Game</h3>
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${connected ? "bg-emerald-400 animate-pulse" : "bg-red-400"}`} />
-                  <Badge variant={connected ? "outline" : "destructive"} className="text-xs">
-                    {connected ? "Live" : "Offline"}
-                  </Badge>
+                  {connected
+                    ? <Wifi className="w-3.5 h-3.5 text-primary" />
+                    : <WifiOff className="w-3.5 h-3.5 text-destructive" />}
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    {connected ? "Live" : "Reconnecting…"}
+                  </span>
                 </div>
-              </div>
-              <div className="text-sm text-muted-foreground flex justify-between">
-                <span>Time Control</span>
-                <span className="font-medium text-foreground">{game.timeControl?.label ?? "—"}</span>
-              </div>
-              <div className="text-sm text-muted-foreground flex justify-between">
-                <span>Status</span>
-                <Badge variant="outline" className="capitalize text-xs">
-                  {isGameOver ? (game.result ?? "Over") : "Active"}
+                <Badge
+                  variant="outline"
+                  className={cn("text-[10px] capitalize", isGameOver ? "border-muted text-muted-foreground" : "border-primary/30 text-primary bg-primary/5")}
+                >
+                  {isGameOver ? (game.result ?? "over") : isMyTurn ? "Your turn" : "Waiting"}
                 </Badge>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card className="flex-1">
-            <CardContent className="p-3">
-              <h4 className="font-semibold text-sm mb-2 px-1">Moves</h4>
-              <div className="max-h-80 overflow-y-auto font-mono text-sm">
-                {movesToShow.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-6 text-xs">No moves yet</p>
-                ) : (
-                  <div className="grid grid-cols-[1.5rem_1fr_1fr] gap-x-1 gap-y-0.5">
-                    {movesToShow.filter((_, i) => i % 2 === 0).map((_, pairIdx) => {
-                      const w = movesToShow[pairIdx * 2];
-                      const b = movesToShow[pairIdx * 2 + 1];
-                      return (
-                        <>
-                          <span key={`n-${pairIdx}`} className="text-muted-foreground text-right text-xs py-0.5">{pairIdx + 1}.</span>
-                          <span key={`w-${pairIdx}`} className="px-1 py-0.5 rounded hover:bg-muted/40 cursor-default">{w.san}</span>
-                          {b ? <span key={`b-${pairIdx}`} className="px-1 py-0.5 rounded hover:bg-muted/40 cursor-default">{b.san}</span> : <span key={`be-${pairIdx}`} />}
-                        </>
-                      );
-                    })}
-                  </div>
-                )}
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-muted/30 rounded-lg p-2">
+                  <div className="text-muted-foreground">Time Control</div>
+                  <div className="font-bold text-foreground mt-0.5">{game.timeControl?.label ?? "—"}</div>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-2">
+                  <div className="text-muted-foreground">Move</div>
+                  <div className="font-bold text-foreground mt-0.5">{movesToShow.length > 0 ? Math.ceil(movesToShow.length / 2) : "—"}</div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {!isGameOver && (isWhitePlayer || isBlackPlayer) && (
-            <div className="space-y-2">
+          {/* Move list */}
+          <Card className="glass-card border-card-border flex-1 overflow-hidden" style={{ minHeight: 200, maxHeight: 360 }}>
+            <CardContent className="p-3 flex flex-col h-full gap-2">
+              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex-shrink-0">Moves</h4>
+              <MoveList moves={movesToShow} />
+            </CardContent>
+          </Card>
+
+          {/* Draw offer notification */}
+          {drawOfferFrom && drawOfferFrom !== player?.id && !isGameOver && (
+            <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/5 p-3 space-y-2 animate-pulse-once">
+              <div className="flex items-center gap-2 text-xs font-semibold text-yellow-300">
+                <Handshake className="w-3.5 h-3.5" /> Opponent offers a draw
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" className="flex-1 text-xs h-8 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-200 border border-yellow-400/30" onClick={drawAccept}>
+                  Accept
+                </Button>
+                <Button size="sm" variant="outline" className="flex-1 text-xs h-8 border-border hover:bg-white/5" onClick={drawDecline}>
+                  Decline
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Controls */}
+          {!isGameOver && !isSpectator && (
+            <div className="hidden lg:flex flex-col gap-2">
               {showResignConfirm ? (
-                <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-medium text-destructive">
-                    <AlertTriangle className="w-4 h-4" /> Resign this game?
+                <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-destructive">
+                    <AlertTriangle className="w-3.5 h-3.5" /> Resign this game?
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="destructive" className="flex-1" onClick={handleResign}>Yes, resign</Button>
-                    <Button size="sm" variant="outline" className="flex-1" onClick={() => setShowResignConfirm(false)}>Cancel</Button>
+                    <Button size="sm" variant="destructive" className="flex-1 text-xs h-8" onClick={handleResign}>
+                      Yes, resign
+                    </Button>
+                    <Button size="sm" variant="outline" className="flex-1 text-xs h-8" onClick={() => setShowResignConfirm(false)}>
+                      Cancel
+                    </Button>
                   </div>
                 </div>
               ) : (
-                <Button variant="outline" className="w-full text-destructive hover:text-destructive border-destructive/30 hover:bg-destructive/10" onClick={handleResign}>
-                  <Flag className="w-4 h-4 mr-2" /> Resign
-                </Button>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-destructive border-destructive/20 hover:bg-destructive/10 hover:border-destructive/40 text-xs"
+                    onClick={handleResign}
+                  >
+                    <Flag className="w-3.5 h-3.5 mr-1.5" /> Resign
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-muted-foreground border-border hover:bg-white/5 text-xs"
+                    onClick={() => drawOffer()}
+                  >
+                    <Handshake className="w-3.5 h-3.5 mr-1.5" /> Draw
+                  </Button>
+                </div>
               )}
             </div>
           )}
 
           {isGameOver && (
             <div className="flex flex-col gap-2">
-              <Button onClick={() => setLocation(`/analysis/${gameId}`)}>
-                <BarChart2 className="w-4 h-4 mr-2" /> Analyze Game
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={() => setLocation(`/analysis/${gameId}`)}>
+                <BarChart2 className="w-4 h-4 mr-1.5" /> Analyse Game
               </Button>
-              <Button variant="outline" onClick={() => setLocation("/")}>
-                <Home className="w-4 h-4 mr-2" /> Back to Home
+              <Button size="sm" variant="outline" className="border-border hover:bg-white/5" onClick={() => setLocation("/play")}>
+                <RotateCcw className="w-4 h-4 mr-1.5" /> Play Again
               </Button>
+              <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => setLocation("/")}>
+                <Home className="w-3.5 h-3.5 mr-1.5" /> Home
+              </Button>
+            </div>
+          )}
+
+          {isSpectator && !isGameOver && (
+            <div className="rounded-xl border border-border bg-muted/20 p-3 text-center text-xs text-muted-foreground">
+              👁 Spectating
             </div>
           )}
         </div>
