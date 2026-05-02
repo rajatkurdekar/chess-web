@@ -109,7 +109,6 @@ function LocalPlayerBar({
 // ─── Main Component ─────────────────────────────────────────────────────────────
 export default function Play() {
   const { player } = useAuth();
-  const [, setLocation] = useLocation();
   const createRoom = useCreateRoom();
 
   const [mode, setMode] = useState<Mode>("select");
@@ -405,7 +404,7 @@ export default function Play() {
 
                 <div className="flex items-center gap-2 pt-1">
                   <span className="font-semibold text-sm" style={{ color: "#22C55E" }}>
-                    {!player ? "Sign in to play online" : "Create private room"}
+                    Create private room
                   </span>
                   <div className="w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300"
                     style={{
