@@ -532,18 +532,8 @@ export default function Play() {
   //  SCREEN: LOCAL GAME
   // ─────────────────────────────────────────────────────────────────────────────
   if (mode === "local-game" && local) {
-    const topName = local.orientation === "white" ? local.blackName : local.whiteName;
-    const topColor = local.orientation === "white" ? "black" : "white" as "white" | "black";
-    const topMs = local.orientation === "white" ? local.blackMs : local.whiteMs;
-    const topActive = local.activeColor === topColor;
-
-    const botName = local.orientation === "white" ? local.whiteName : local.blackName;
-    const botColor = local.orientation === "white" ? "white" : "black" as "white" | "black";
-    const botMs = local.orientation === "white" ? local.whiteMs : local.blackMs;
-    const botActive = local.activeColor === botColor;
-
     const unlimited = local.timeChoiceMs === 0;
-    const isMyTurn = !local.showPass && !local.gameOver;
+    const isPlayable = !local.gameOver;
 
     const lastMove = local.moves.length > 0 ? {
       from: local.moves[local.moves.length - 1].slice(0, 2),
@@ -570,57 +560,21 @@ export default function Play() {
             </div>
           </div>
 
+          {/* Black player bar (top) */}
           <LocalPlayerBar
-            name={topName} color={topColor} active={topActive}
-            ms={topMs} unlimited={unlimited} isTop
+            name={local.blackName} color="black"
+            active={local.activeColor === "black"}
+            ms={local.blackMs} unlimited={unlimited} isTop
           />
 
           <div className="relative w-full max-w-[580px]">
             <ChessBoard
               fen={local.fen}
-              orientation={local.orientation}
+              orientation="white"
               onMove={handleLocalMove}
-              disabled={!isMyTurn}
+              disabled={!isPlayable}
               lastMove={lastMove}
             />
-
-            {/* Pass-device overlay */}
-            {local.showPass && !local.gameOver && (
-              <div className="absolute inset-0 rounded-sm flex items-center justify-center z-50"
-                style={{ backdropFilter: "blur(20px)", background: "rgba(13,15,23,0.88)" }}>
-                <div className="text-center space-y-5 p-8">
-                  <div className="text-6xl">
-                    {local.activeColor === "white" ? "♔" : "♚"}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-widest mb-2"
-                      style={{ color: local.activeColor === "white" ? "#F59E0B" : "#22C55E" }}>
-                      Next up
-                    </div>
-                    <div className="font-display text-3xl font-bold text-white">
-                      {local.activeColor === "white" ? local.whiteName : local.blackName}
-                    </div>
-                    <div className="text-muted-foreground text-sm mt-1">
-                      Playing {local.activeColor}
-                    </div>
-                  </div>
-                  <button
-                    onClick={handlePassConfirm}
-                    className="px-8 py-3 rounded-xl font-bold text-white transition-all duration-200"
-                    style={{
-                      background: local.activeColor === "white"
-                        ? "linear-gradient(135deg, rgba(245,158,11,0.9), rgba(234,88,12,0.8))"
-                        : "linear-gradient(135deg, rgba(34,197,94,0.9), rgba(16,185,129,0.8))",
-                      boxShadow: local.activeColor === "white"
-                        ? "0 8px 24px rgba(245,158,11,0.3)"
-                        : "0 8px 24px rgba(34,197,94,0.3)",
-                    }}
-                  >
-                    I'm Ready → Reveal Board
-                  </button>
-                </div>
-              </div>
-            )}
 
             {/* Game over overlay */}
             {local.gameOver && (
@@ -662,13 +616,15 @@ export default function Play() {
             )}
           </div>
 
+          {/* White player bar (bottom) */}
           <LocalPlayerBar
-            name={botName} color={botColor} active={botActive}
-            ms={botMs} unlimited={unlimited}
+            name={local.whiteName} color="white"
+            active={local.activeColor === "white"}
+            ms={local.whiteMs} unlimited={unlimited}
           />
 
-          {/* Resign / resign confirm */}
-          {!local.gameOver && !local.showPass && (
+          {/* Resign */}
+          {!local.gameOver && (
             <div className="mt-4">
               <button
                 onClick={() => {
