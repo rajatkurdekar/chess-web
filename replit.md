@@ -83,3 +83,42 @@ Seeded demo players: Magnus (2840), Hikaru (2780), AliReza (2760), Demo (1500)
 ## Running
 - API server: `pnpm --filter @workspace/api-server run dev`
 - Frontend: `pnpm --filter @workspace/chess-platform run dev`
+
+## GitHub Sync
+
+Replit manages its own internal git history automatically (every task merge creates a commit). Changes are **not** pushed to GitHub automatically — you must push manually.
+
+### One-time setup
+
+To authenticate, create a [GitHub Personal Access Token (classic)](https://github.com/settings/tokens) with `repo` scope and store it as a Replit Secret named `GITHUB_TOKEN` so it is never hard-coded.
+
+Add your GitHub repo as a remote with the token embedded in the URL (only needed once):
+
+```bash
+git remote add origin https://<your-username>:$GITHUB_TOKEN@github.com/<your-username>/<your-repo>.git
+```
+
+If `origin` already exists, update the URL instead:
+
+```bash
+git remote set-url origin https://<your-username>:$GITHUB_TOKEN@github.com/<your-username>/<your-repo>.git
+```
+
+> **Security note:** Embedding the token in the remote URL keeps it out of shell history and process listings (unlike passing it inline on the command line). The URL is stored in `.git/config`, which is not committed.
+
+### Push after each task
+
+After any significant change is merged by Replit (you'll see a new commit in `git log`), run:
+
+```bash
+git push origin main
+```
+
+### Verify the remote is set
+
+```bash
+git remote -v
+# Should show an "origin" entry pointing to your GitHub repo
+```
+
+> **Note:** The `gitsafe-backup` remote visible in `.git/config` is Replit's internal backup system — it is separate from GitHub and managed automatically by the platform.
