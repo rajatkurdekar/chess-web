@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { db, gamesTable, movesTable } from "@workspace/db";
 import {
   CreateAiGameBody,
@@ -30,11 +30,12 @@ router.get("/games", async (req, res): Promise<void> => {
   const status = query.success ? query.data.status : undefined;
   const limit = query.success ? (query.data.limit ?? 20) : 20;
 
-  let dbQuery = db.select().from(gamesTable).orderBy(desc(gamesTable.createdAt)).limit(limit);
-  const games = await dbQuery;
+  const games = await db.select().from(gamesTable)
+    .where(status ? eq(gamesTable.status, status) : undefined)
+    .orderBy(desc(gamesTable.createdAt))
+    .limit(limit);
 
-  const filtered = status ? games.filter(g => g.status === status) : games;
-  res.json({ games: filtered, total: filtered.length });
+  res.json({ games, total: games.length });
 });
 
 router.post("/games/ai", async (req, res): Promise<void> => {

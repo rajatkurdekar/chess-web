@@ -31,6 +31,8 @@ export interface Player {
   id: string;
   username: string;
   rating: number;
+  peakRating: number;
+  currentStreak: number;
   isGuest: boolean;
   gamesPlayed: number;
   wins: number;
