@@ -19,9 +19,7 @@ type Mode = "select" | "local-setup" | "local-game" | "room";
 
 interface LocalState {
   fen: string;
-  orientation: "white" | "black";
   activeColor: "white" | "black";
-  showPass: boolean;
   whiteMs: number;
   blackMs: number;
   timeChoiceMs: number;
@@ -132,7 +130,7 @@ export default function Play() {
   // ── Clock tick ──────────────────────────────────────────────────────────────
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (!local || local.showPass || local.gameOver || local.timeChoiceMs === 0) return;
+    if (!local || local.gameOver || local.timeChoiceMs === 0) return;
 
     lastTickRef.current = Date.now();
     timerRef.current = setInterval(() => {
@@ -141,7 +139,7 @@ export default function Play() {
       lastTickRef.current = now;
 
       setLocal(prev => {
-        if (!prev || prev.showPass || prev.gameOver || prev.timeChoiceMs === 0) return prev;
+        if (!prev || prev.gameOver || prev.timeChoiceMs === 0) return prev;
         if (prev.activeColor === "white") {
           const next = Math.max(0, prev.whiteMs - elapsed);
           if (next === 0) return { ...prev, whiteMs: 0, gameOver: { result: "black", reason: "timeout" } };
@@ -155,7 +153,7 @@ export default function Play() {
     }, 100);
 
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [local?.showPass, local?.gameOver, local?.activeColor, local?.timeChoiceMs, mode]);
+  }, [local?.gameOver, local?.activeColor, local?.timeChoiceMs, mode]);
 
   // ── Start local game ────────────────────────────────────────────────────────
   const startLocalGame = useCallback(() => {

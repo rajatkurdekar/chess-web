@@ -17,18 +17,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
+    document.documentElement.classList.add("dark");
     const storedPlayer = localStorage.getItem("chess_player");
     const storedToken = localStorage.getItem("chess_token");
     if (storedPlayer && storedToken) {
       try {
         setPlayer(JSON.parse(storedPlayer));
         setToken(storedToken);
-      } catch (e) {
-        // Invalid JSON
+        return;
+      } catch {
+        // Invalid JSON — fall through to create guest
       }
     }
-    // Add dark class to html to enforce dark mode
-    document.documentElement.classList.add("dark");
+    fetch("/api/players/guest", { method: "POST" })
+      .then(res => (res.ok ? res.json() : null))
+      .then((data: { player: Player; token: string } | null) => {
+        if (data?.player && data?.token) {
+          setPlayer(data.player);
+          setToken(data.token);
+          localStorage.setItem("chess_player", JSON.stringify(data.player));
+          localStorage.setItem("chess_token", data.token);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const login = (newPlayer: Player, newToken: string) => {

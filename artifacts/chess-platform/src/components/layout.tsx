@@ -56,46 +56,19 @@ export function Layout({ children }: { children: ReactNode }) {
 
           {/* Auth */}
           <div className="flex items-center gap-2">
-            {player ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  href={`/profile/${player.id}`}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-white/5 transition-all group"
-                >
-                  <div className="w-7 h-7 rounded-md bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold text-sm">
-                    {player.username.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="hidden sm:block text-left">
-                    <div className="text-xs font-semibold text-foreground leading-tight">{player.username}</div>
-                    <div className="text-[10px] text-muted-foreground gradient-text-gold font-bold">{player.rating}</div>
-                  </div>
-                </Link>
-                <button
-                  onClick={() => { logout(); setLocation("/"); }}
-                  className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                  title="Sign out"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-foreground"
-                  onClick={() => setLocation("/auth")}
-                >
-                  Sign in
-                </Button>
-                <Button
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20"
-                  onClick={() => setLocation("/auth")}
-                >
-                  Get Started
-                </Button>
-              </div>
+            {player && (
+              <Link
+                href={`/profile/${player.id}`}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-white/5 transition-all group"
+              >
+                <div className="w-7 h-7 rounded-md bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold text-sm">
+                  {player.username.charAt(0).toUpperCase()}
+                </div>
+                <div className="hidden sm:block text-left">
+                  <div className="text-xs font-semibold text-foreground leading-tight">{player.username}</div>
+                  <div className="text-[10px] text-muted-foreground gradient-text-gold font-bold">{player.rating}</div>
+                </div>
+              </Link>
             )}
           </div>
         </div>

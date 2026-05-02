@@ -199,22 +199,30 @@ export const WhiteKnight = ({ className, style }: PieceProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" className={className} style={style}>
     <ellipse cx="22.5" cy="42.5" rx="12" ry="2" fill="url(#cf-shadow)" />
     <g stroke="#5A3818" strokeLinecap="round" strokeLinejoin="round">
-      {/* Main horse silhouette */}
+      {/* Base */}
+      <path fill="url(#cf-w-base)" strokeWidth="1.2" d="M10 38h26v-3H10z" />
+      {/* Horse head + neck silhouette, facing left */}
       <path fill="url(#cf-w-body)" strokeWidth="1.1"
-        d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21" />
-      {/* Head / muzzle */}
-      <path fill="url(#cf-w-body)" strokeWidth="1.0"
-        d="M24 18c.38 5.12-4 6.85-8 8.5-4.5 2-6.5 1.5-7.5 4 1 1.5.5 2-.5 3 1.5 1 3.5 1.5 3.5 1.5-1.5 2.5.5 2.5.5 2.5 6.5 0 16.5 0 23-3 0-2 .5-4 0-6-7-2-14-6.5-14-11.5.3-4.5 4.3-9.5 6.5-8z" />
+        d="M15,5 L13,7 C11,9 9,13 9,18 C9,22 10,25 10,28 L10,35 L34,35 L31,27 C30,22 29,16 30,12 C31,8 29,6 26,6 C23,6 20,7 17,8 Z" />
+      {/* Ear filled inner */}
+      <path fill="url(#cf-w-body)" strokeWidth="0.8"
+        d="M15,5 L17,8 L13,7 Z" />
+      {/* Mane detail on back of neck */}
+      <path fill="none" stroke="#5A3818" strokeWidth="0.9" strokeLinecap="round"
+        d="M26,6 C27,9 27,13 27,17 C27,21 27,25 28,28" />
+      {/* Bridle line */}
+      <path fill="none" stroke="#5A3818" strokeWidth="0.8"
+        d="M13,15 C14,17 14,20 13,22" />
       {/* Eye */}
-      <circle cx="9.5" cy="25" r="1.1" fill="#5A3818" stroke="none" />
+      <circle cx="12" cy="16" r="1.4" fill="#5A3818" stroke="none" />
       {/* Nostril */}
-      <circle cx="15"  cy="15" r="1.1" fill="#5A3818" stroke="none" />
+      <circle cx="10" cy="21" r="0.9" fill="#5A3818" stroke="none" />
     </g>
     {/* Rim light on back */}
-    <path fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="1.2"
-      d="M35 16c2 4 3 10 3 20" />
-    {/* Specular highlight on head */}
-    <ellipse cx="21" cy="14" rx="3.5" ry="2" fill="rgba(255,255,255,0.48)" transform="rotate(-30,21,14)" />
+    <path fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.1"
+      d="M30,12 C31,16 31,22 31,28" />
+    {/* Specular on forehead */}
+    <ellipse cx="18" cy="10" rx="3" ry="1.8" fill="rgba(255,255,255,0.52)" transform="rotate(-25,18,10)" />
   </svg>
 );
 
@@ -369,25 +377,30 @@ export const BlackKnight = ({ className, style }: PieceProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" className={className} style={style}>
     <ellipse cx="22.5" cy="42.5" rx="12" ry="2" fill="url(#cf-shadow)" />
     <g stroke="#000000" strokeLinecap="round" strokeLinejoin="round">
-      {/* Main body */}
+      {/* Base */}
+      <path fill="url(#cf-b-base)" strokeWidth="1.2" d="M10 38h26v-3H10z" />
+      {/* Horse head + neck silhouette, facing left */}
       <path fill="url(#cf-b-body)" strokeWidth="1.1"
-        d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21" />
-      {/* Head */}
-      <path fill="url(#cf-b-body)" strokeWidth="1.0"
-        d="M24 18c.38 5.12-4 6.85-8 8.5-4.5 2-6.5 1.5-7.5 4 1 1.5.5 2-.5 3 1.5 1 3.5 1.5 3.5 1.5-1.5 2.5.5 2.5.5 2.5 6.5 0 16.5 0 23-3 0-2 .5-4 0-6-7-2-14-6.5-14-11.5.3-4.5 4.3-9.5 6.5-8z" />
-      {/* Eye (light) */}
-      <circle cx="9.5" cy="25" r="1.1" fill="rgba(255,255,255,0.70)" stroke="none" />
+        d="M15,5 L13,7 C11,9 9,13 9,18 C9,22 10,25 10,28 L10,35 L34,35 L31,27 C30,22 29,16 30,12 C31,8 29,6 26,6 C23,6 20,7 17,8 Z" />
+      {/* Ear filled inner */}
+      <path fill="url(#cf-b-body)" strokeWidth="0.8"
+        d="M15,5 L17,8 L13,7 Z" />
+      {/* Mane detail */}
+      <path fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="0.9" strokeLinecap="round"
+        d="M26,6 C27,9 27,13 27,17 C27,21 27,25 28,28" />
+      {/* Bridle line */}
+      <path fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8"
+        d="M13,15 C14,17 14,20 13,22" />
+      {/* Eye */}
+      <circle cx="12" cy="16" r="1.4" fill="rgba(255,255,255,0.85)" stroke="none" />
       {/* Nostril */}
-      <circle cx="15"  cy="15" r="1.1" fill="rgba(255,255,255,0.50)" stroke="none" />
+      <circle cx="10" cy="21" r="0.9" fill="rgba(255,255,255,0.55)" stroke="none" />
     </g>
-    {/* Inner detail */}
-    <path fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8"
-      d="M18 18c-2 2-3 5-3 9" />
     {/* Rim light on back */}
-    <path fill="none" stroke="rgba(255,255,255,0.24)" strokeWidth="1.3"
-      d="M35 16c2 4 3 10 3 20" />
-    {/* Specular on head */}
-    <ellipse cx="21" cy="14" rx="3" ry="1.8" fill="rgba(255,255,255,0.16)" transform="rotate(-30,21,14)" />
+    <path fill="none" stroke="rgba(255,255,255,0.24)" strokeWidth="1.2"
+      d="M30,12 C31,16 31,22 31,28" />
+    {/* Specular on forehead */}
+    <ellipse cx="18" cy="10" rx="2.8" ry="1.7" fill="rgba(255,255,255,0.20)" transform="rotate(-25,18,10)" />
   </svg>
 );
 

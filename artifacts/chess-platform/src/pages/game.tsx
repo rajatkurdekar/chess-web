@@ -297,7 +297,7 @@ export default function GamePage() {
   const isWhitePlayer = player?.id === game.whitePlayerId;
   const isBlackPlayer = player?.id === game.blackPlayerId;
   const isSpectator = !isWhitePlayer && !isBlackPlayer;
-  const orientation = isBlackPlayer ? "black" : "white";
+  const orientation = "white" as const;
   const currentTurn = fenTurn(game.fen);
   const isMyTurn =
     game.status === "active" &&
