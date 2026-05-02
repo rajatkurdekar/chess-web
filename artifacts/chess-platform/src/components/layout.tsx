@@ -110,7 +110,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <footer className="border-t border-white/[0.05] py-4">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-[11px] text-muted-foreground">
           <span className="font-display font-bold text-foreground/40">ChessForge</span>
-          <span>Real-time chess · ELO ratings · AI opponent</span>
+          <span>Real-time chess · ELO ratings · Human vs Human</span>
         </div>
       </footer>
     </div>
