@@ -5,14 +5,18 @@ import { Button } from "@/components/ui/button";
 import { ChessBoard } from "@/components/chess-board";
 import { useGetGame } from "@workspace/api-client-react";
 import { useRoute, useLocation } from "wouter";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Chess } from "chess.js";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Home, RotateCcw } from "lucide-react";
+import {
+  ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Home, RotateCcw,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// ─── Evaluation helpers ───────────────────────────────────────────────────────
+// ─── Evaluation helpers ────────────────────────────────────────────────────────
 
-const PIECE_VALUES: Record<string, number> = { p: 1, n: 3, b: 3.2, r: 5, q: 9 };
+const PIECE_VALUES: Record<string, number> = {
+  p: 1, n: 3, b: 3.2, r: 5, q: 9,
+};
 
 function evalPosition(fen: string): number {
   const chess = new Chess(fen);
@@ -30,16 +34,21 @@ function evalPosition(fen: string): number {
 }
 
 function evalToBar(score: number): number {
-  // Returns 0-100, 50 = equal, >50 = white advantage
   const clamped = Math.max(-10, Math.min(10, score));
   return 50 + (clamped / 10) * 45;
 }
 
-type MoveQuality = "brilliant" | "excellent" | "good" | "inaccuracy" | "mistake" | "blunder" | null;
+type MoveQuality =
+  | "brilliant"
+  | "excellent"
+  | "good"
+  | "inaccuracy"
+  | "mistake"
+  | "blunder"
+  | null;
 
 function getMoveQuality(scoreBefore: number, scoreAfter: number, color: "w" | "b"): MoveQuality {
-  // Positive delta = better for the player who just moved
-  const delta = color === "w" ? (scoreAfter - scoreBefore) : (scoreBefore - scoreAfter);
+  const delta = color === "w" ? scoreAfter - scoreBefore : scoreBefore - scoreAfter;
   if (delta >= 1.5) return "brilliant";
   if (delta >= 0) return "excellent";
   if (delta >= -0.3) return "good";
@@ -49,15 +58,33 @@ function getMoveQuality(scoreBefore: number, scoreAfter: number, color: "w" | "b
 }
 
 const QUALITY_LABEL: Record<string, string> = {
-  brilliant: "!!", excellent: "!", good: "✓",
-  inaccuracy: "?!", mistake: "?", blunder: "??",
+  brilliant: "!!",
+  excellent: "!",
+  good: "✓",
+  inaccuracy: "?!",
+  mistake: "?",
+  blunder: "??",
 };
 const QUALITY_CLASS: Record<string, string> = {
-  brilliant: "move-brilliant", excellent: "move-excellent", good: "move-good",
-  inaccuracy: "move-inaccuracy", mistake: "move-mistake", blunder: "move-blunder",
+  brilliant: "move-brilliant",
+  excellent: "move-excellent",
+  good: "move-good",
+  inaccuracy: "move-inaccuracy",
+  mistake: "move-mistake",
+  blunder: "move-blunder",
 };
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Parse a UCI string to chess.js move input ─────────────────────────────────
+
+function uciToMove(uci: string): { from: string; to: string; promotion?: string } {
+  return {
+    from: uci.slice(0, 2),
+    to: uci.slice(2, 4),
+    promotion: uci.length === 5 ? uci[4] : undefined,
+  };
+}
+
+// ─── Main component ────────────────────────────────────────────────────────────
 
 export default function Analysis() {
   const [, params] = useRoute("/analysis/:id");
@@ -75,36 +102,75 @@ export default function Analysis() {
     const chess = new Chess();
     const fens: string[] = [chess.fen()];
     const evs: number[] = [evalPosition(chess.fen())];
-    const quals: (MoveQuality)[] = [null];
+    const quals: MoveQuality[] = [null];
+
     for (const move of moves) {
       const prevScore = evs[evs.length - 1];
       try {
-        chess.move(move.uci ?? move.san);
+        // Always use from/to/promotion format — never raw UCI string for chess.js
+        const moveInput = move.uci
+          ? uciToMove(move.uci)
+          : move.san; // fallback to SAN if no UCI
+        chess.move(moveInput as Parameters<typeof chess.move>[0]);
         const fen = chess.fen();
         const score = evalPosition(fen);
-        const movedColor = chess.turn() === "w" ? "b" : "w"; // after move, turn flipped
+        // After move, turn has flipped — the color that just moved is the opposite of chess.turn()
+        const movedColor = chess.turn() === "w" ? "b" : "w";
         fens.push(fen);
         evs.push(score);
         quals.push(getMoveQuality(prevScore, score, movedColor));
-      } catch { break; }
+      } catch {
+        break;
+      }
     }
     return { positions: fens, evals: evs, qualities: quals };
   }, [moves]);
 
   const currentIndex = cursor === -1 ? Math.max(0, positions.length - 1) : cursor;
-  const currentFen = positions[currentIndex] ?? game?.fen ?? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  const currentFen =
+    positions[currentIndex] ??
+    game?.fen ??
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
   const currentEval = evals[currentIndex] ?? 0;
   const barPct = evalToBar(currentEval);
   const isWhiteAhead = currentEval > 0;
 
-  const goToStart = () => setCursor(0);
-  const goToPrev = () => setCursor(Math.max(0, currentIndex - 1));
-  const goToNext = () => {
-    const next = currentIndex + 1;
-    if (next >= positions.length) return;
-    setCursor(next === positions.length - 1 ? -1 : next);
-  };
-  const goToEnd = () => setCursor(-1);
+  const goToStart = useCallback(() => setCursor(0), []);
+  const goToPrev = useCallback(
+    () => setCursor((c) => {
+      const idx = c === -1 ? Math.max(0, positions.length - 1) : c;
+      return Math.max(0, idx - 1);
+    }),
+    [positions.length]
+  );
+  const goToNext = useCallback(
+    () => setCursor((c) => {
+      const idx = c === -1 ? positions.length - 1 : c;
+      const next = idx + 1;
+      if (next >= positions.length) return c;
+      return next === positions.length - 1 ? -1 : next;
+    }),
+    [positions.length]
+  );
+  const goToEnd = useCallback(() => setCursor(-1), []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === "ArrowLeft") { e.preventDefault(); goToPrev(); }
+      if (e.key === "ArrowRight") { e.preventDefault(); goToNext(); }
+      if (e.key === "ArrowUp" || e.key === "Home") { e.preventDefault(); goToStart(); }
+      if (e.key === "ArrowDown" || e.key === "End") { e.preventDefault(); goToEnd(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [goToPrev, goToNext, goToStart, goToEnd]);
+
+  // Reset cursor when new game loads
+  useEffect(() => {
+    setCursor(-1);
+  }, [gameId]);
 
   if (!game) {
     return (
@@ -117,14 +183,40 @@ export default function Analysis() {
     );
   }
 
-  const resultLabel = game.result === "white" ? `${game.whiteUsername} wins`
-    : game.result === "black" ? `${game.blackUsername ?? "Black"} wins`
-    : game.result === "draw" ? "Draw" : "In progress";
+  const resultLabel =
+    game.result === "white"
+      ? `${game.whiteUsername} wins`
+      : game.result === "black"
+      ? `${game.blackUsername ?? "Black"} wins`
+      : game.result === "draw"
+      ? "Draw"
+      : "In progress";
 
-  const pairs: Array<{ num: number; white: typeof moves[0]; black?: typeof moves[0]; wQ: MoveQuality; bQ: MoveQuality }> = [];
+  const pairs: Array<{
+    num: number;
+    white: (typeof moves)[0];
+    black?: (typeof moves)[0];
+    wQ: MoveQuality;
+    bQ: MoveQuality;
+  }> = [];
   for (let i = 0; i < moves.length; i += 2) {
-    pairs.push({ num: i / 2 + 1, white: moves[i], black: moves[i + 1], wQ: qualities[i + 1] ?? null, bQ: qualities[i + 2] ?? null });
+    pairs.push({
+      num: i / 2 + 1,
+      white: moves[i],
+      black: moves[i + 1],
+      wQ: qualities[i + 1] ?? null,
+      bQ: qualities[i + 2] ?? null,
+    });
   }
+
+  // Derive last move from cursor position
+  const lastMove =
+    currentIndex > 0 && moves[currentIndex - 1]?.uci
+      ? {
+          from: moves[currentIndex - 1].uci.slice(0, 2),
+          to: moves[currentIndex - 1].uci.slice(2, 4),
+        }
+      : null;
 
   return (
     <Layout>
@@ -132,24 +224,28 @@ export default function Analysis() {
 
         {/* ── Evaluation Bar (vertical) ── */}
         <div className="hidden lg:flex flex-col items-center w-6">
-          <div className="flex-1 w-full bg-[#1a1a1a] rounded-full overflow-hidden relative border border-white/10" style={{ minHeight: 400 }}>
-            {/* Black side (top) */}
+          <div
+            className="flex-1 w-full bg-[#1a1a1a] rounded-full overflow-hidden relative border border-white/10"
+            style={{ minHeight: 400 }}
+          >
             <div
               className="absolute top-0 left-0 right-0 bg-gradient-to-b from-zinc-700 to-zinc-800 eval-bar transition-all"
               style={{ height: `${100 - barPct}%` }}
             />
-            {/* White side (bottom) */}
             <div
               className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-stone-100 to-stone-200 eval-bar transition-all"
               style={{ height: `${barPct}%` }}
             />
-            {/* Score label */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={cn(
-                "text-[10px] font-bold font-mono rotate-90",
-                isWhiteAhead ? "text-zinc-800" : "text-stone-200"
-              )}>
-                {Math.abs(currentEval) < 0.1 ? "=" : `${isWhiteAhead ? "+" : "−"}${Math.abs(currentEval).toFixed(1)}`}
+              <span
+                className={cn(
+                  "text-[10px] font-bold font-mono rotate-90",
+                  isWhiteAhead ? "text-zinc-800" : "text-stone-200"
+                )}
+              >
+                {Math.abs(currentEval) < 0.1
+                  ? "="
+                  : `${isWhiteAhead ? "+" : "−"}${Math.abs(currentEval).toFixed(1)}`}
               </span>
             </div>
           </div>
@@ -160,33 +256,72 @@ export default function Analysis() {
           <div className="w-full flex justify-between items-start max-w-[580px]">
             <div>
               <h2 className="font-bold text-base text-foreground">
-                {game.whiteUsername} <span className="text-muted-foreground font-normal text-sm">vs</span> {game.blackUsername ?? "AI"}
+                {game.whiteUsername}{" "}
+                <span className="text-muted-foreground font-normal text-sm">vs</span>{" "}
+                {game.blackUsername ?? "AI"}
               </h2>
-              <p className="text-xs text-muted-foreground">{game.timeControl?.label} · {resultLabel}</p>
+              <p className="text-xs text-muted-foreground">
+                {game.timeControl?.label} · {resultLabel}
+              </p>
             </div>
-            <Badge variant="outline" className="capitalize text-xs">{game.status}</Badge>
+            <Badge variant="outline" className="capitalize text-xs">
+              {game.status}
+            </Badge>
           </div>
 
-          <ChessBoard fen={currentFen} disabled orientation="white" />
+          <ChessBoard fen={currentFen} disabled orientation="white" lastMove={lastMove} />
 
           {/* Navigation */}
           <div className="flex items-center gap-1.5 w-full max-w-[580px] justify-center">
-            <Button variant="outline" size="icon" className="h-8 w-8 border-border hover:bg-white/5" onClick={goToStart} disabled={currentIndex === 0}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-border hover:bg-white/5"
+              onClick={goToStart}
+              disabled={currentIndex === 0}
+              title="Start (↑ / Home)"
+            >
               <ChevronsLeft className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="icon" className="h-8 w-8 border-border hover:bg-white/5" onClick={goToPrev} disabled={currentIndex === 0}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-border hover:bg-white/5"
+              onClick={goToPrev}
+              disabled={currentIndex === 0}
+              title="Previous (←)"
+            >
               <ChevronLeft className="w-4 h-4" />
             </Button>
             <div className="flex-1 text-center text-xs text-muted-foreground font-mono">
-              {currentIndex === 0 ? "Start" : `Move ${currentIndex} / ${positions.length - 1}`}
+              {currentIndex === 0
+                ? "Start"
+                : `Move ${currentIndex} / ${positions.length - 1}`}
             </div>
-            <Button variant="outline" size="icon" className="h-8 w-8 border-border hover:bg-white/5" onClick={goToNext} disabled={currentIndex >= positions.length - 1}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-border hover:bg-white/5"
+              onClick={goToNext}
+              disabled={currentIndex >= positions.length - 1}
+              title="Next (→)"
+            >
               <ChevronRight className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="icon" className="h-8 w-8 border-border hover:bg-white/5" onClick={goToEnd} disabled={cursor === -1}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-border hover:bg-white/5"
+              onClick={goToEnd}
+              disabled={cursor === -1}
+              title="End (↓ / End)"
+            >
               <ChevronsRight className="w-4 h-4" />
             </Button>
           </div>
+          <p className="text-[10px] text-muted-foreground/40">
+            Use arrow keys to navigate moves
+          </p>
         </div>
 
         {/* ── Sidebar ── */}
@@ -195,12 +330,17 @@ export default function Analysis() {
           {/* Game info */}
           <Card className="glass-card border-card-border">
             <CardHeader className="pb-2 pt-3 px-3">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Game Info</CardTitle>
+              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Game Info
+              </CardTitle>
             </CardHeader>
             <CardContent className="px-3 pb-3 space-y-2 text-xs">
               {[
                 { label: "White", value: `${game.whiteUsername} (${game.whiteRating})` },
-                { label: "Black", value: `${game.blackUsername ?? "AI"} (${game.blackRating ?? "—"})` },
+                {
+                  label: "Black",
+                  value: `${game.blackUsername ?? "AI"} (${game.blackRating ?? "—"})`,
+                },
                 { label: "Time", value: game.timeControl?.label ?? "—" },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between items-center">
@@ -211,26 +351,41 @@ export default function Analysis() {
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Result</span>
                 <Badge variant="outline" className="capitalize text-[10px] h-5">
-                  {game.result === "white" ? "1–0" : game.result === "black" ? "0–1" : game.result === "draw" ? "½–½" : "—"}
+                  {game.result === "white"
+                    ? "1–0"
+                    : game.result === "black"
+                    ? "0–1"
+                    : game.result === "draw"
+                    ? "½–½"
+                    : "—"}
                 </Badge>
               </div>
               {game.resultReason && (
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Reason</span>
-                  <span className="font-medium capitalize">{game.resultReason}</span>
+                  <span className="font-medium capitalize">
+                    {game.resultReason.replace(/_/g, " ")}
+                  </span>
                 </div>
               )}
             </CardContent>
           </Card>
 
           {/* Move list with quality indicators */}
-          <Card className="glass-card border-card-border flex-1 overflow-hidden" style={{ maxHeight: 400 }}>
+          <Card
+            className="glass-card border-card-border flex-1 overflow-hidden"
+            style={{ maxHeight: 400 }}
+          >
             <CardHeader className="pb-1 pt-3 px-3">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Move List</CardTitle>
+              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Move List
+              </CardTitle>
             </CardHeader>
             <CardContent className="px-2 pb-3 overflow-y-auto" style={{ maxHeight: 340 }}>
               {moves.length === 0 ? (
-                <p className="text-center text-muted-foreground py-4 text-xs">No moves recorded</p>
+                <p className="text-center text-muted-foreground py-4 text-xs">
+                  No moves recorded
+                </p>
               ) : (
                 <div className="font-mono text-sm space-y-0.5">
                   {pairs.map(({ num, white, black, wQ, bQ }) => {
@@ -238,17 +393,23 @@ export default function Analysis() {
                     const bIdx = (num - 1) * 2 + 2;
                     return (
                       <div key={num} className="grid grid-cols-[1.5rem_1fr_1fr] gap-x-1">
-                        <span className="text-muted-foreground/60 text-right text-xs py-0.5">{num}.</span>
+                        <span className="text-muted-foreground/60 text-right text-xs py-0.5">
+                          {num}.
+                        </span>
                         <button
                           onClick={() => setCursor(wIdx)}
                           className={cn(
                             "text-left px-1.5 py-0.5 rounded text-xs transition-colors flex items-center gap-0.5",
-                            currentIndex === wIdx ? "bg-primary/15 text-primary" : "hover:bg-white/5 text-foreground/80"
+                            currentIndex === wIdx
+                              ? "bg-primary/15 text-primary"
+                              : "hover:bg-white/5 text-foreground/80"
                           )}
                         >
                           {white.san}
                           {wQ && wQ !== "good" && wQ !== "excellent" && (
-                            <span className={cn("text-[10px] font-bold", QUALITY_CLASS[wQ])}>{QUALITY_LABEL[wQ]}</span>
+                            <span className={cn("text-[10px] font-bold", QUALITY_CLASS[wQ])}>
+                              {QUALITY_LABEL[wQ]}
+                            </span>
                           )}
                         </button>
                         {black ? (
@@ -256,15 +417,21 @@ export default function Analysis() {
                             onClick={() => setCursor(bIdx)}
                             className={cn(
                               "text-left px-1.5 py-0.5 rounded text-xs transition-colors flex items-center gap-0.5",
-                              currentIndex === bIdx ? "bg-primary/15 text-primary" : "hover:bg-white/5 text-foreground/70"
+                              currentIndex === bIdx
+                                ? "bg-primary/15 text-primary"
+                                : "hover:bg-white/5 text-foreground/70"
                             )}
                           >
                             {black.san}
                             {bQ && bQ !== "good" && bQ !== "excellent" && (
-                              <span className={cn("text-[10px] font-bold", QUALITY_CLASS[bQ])}>{QUALITY_LABEL[bQ]}</span>
+                              <span className={cn("text-[10px] font-bold", QUALITY_CLASS[bQ])}>
+                                {QUALITY_LABEL[bQ]}
+                              </span>
                             )}
                           </button>
-                        ) : <span />}
+                        ) : (
+                          <span />
+                        )}
                       </div>
                     );
                   })}
@@ -273,7 +440,7 @@ export default function Analysis() {
             </CardContent>
           </Card>
 
-          {/* Legend */}
+          {/* Move quality legend */}
           <Card className="glass-card border-card-border">
             <CardContent className="px-3 py-2.5">
               <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
@@ -295,10 +462,20 @@ export default function Analysis() {
           </Card>
 
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" className="flex-1 border-border hover:bg-white/5 text-xs" onClick={() => setLocation("/play")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1 border-border hover:bg-white/5 text-xs"
+              onClick={() => setLocation("/play")}
+            >
               <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Rematch
             </Button>
-            <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground text-xs" onClick={() => setLocation("/")}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground text-xs"
+              onClick={() => setLocation("/")}
+            >
               <Home className="w-3.5 h-3.5 mr-1.5" /> Home
             </Button>
           </div>
