@@ -7,6 +7,8 @@ import {
   unregisterSocket,
   processMove,
   getActiveGame,
+  resignGame,
+  acceptDraw,
 } from "./game-manager.js";
 import { logger } from "./logger.js";
 import { auditMove, clearGameHistory } from "./anti-cheat.js";
@@ -204,26 +206,15 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
 
     socket.on("game:resign", async ({ gameId, playerId }: { gameId: string; playerId: string }) => {
       try {
-        const [game] = await db.select().from(gamesTable).where(eq(gamesTable.id, gameId));
-        if (!game || game.status !== "active") return;
-
-        const isWhite = game.whitePlayerId === playerId;
-        const result = isWhite ? "black" : "white";
-
-        await db.update(gamesTable).set({
-          status: "finished",
-          result,
-          resultReason: "resignation",
-        }).where(eq(gamesTable.id, gameId));
-
+        const updated = await resignGame(gameId, playerId);
         clearGameHistory(gameId);
         gameMoveTimestamps.delete(gameId);
-
         io.to(`game:${gameId}`).emit("game:over", {
           gameId,
-          result,
-          resultReason: "resignation",
+          result: updated.result,
+          resultReason: updated.resultReason,
         });
+        logger.info({ gameId, playerId, result: updated.result }, "Player resigned, ratings updated");
       } catch (err) {
         logger.error({ err, gameId }, "Error resigning game");
       }
@@ -241,24 +232,15 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
 
     socket.on("game:draw-accept", async ({ gameId, playerId }: { gameId: string; playerId: string }) => {
       try {
-        const [game] = await db.select().from(gamesTable).where(eq(gamesTable.id, gameId));
-        if (!game || game.status !== "active" || !game.drawOfferedBy || game.drawOfferedBy === playerId) return;
-
-        await db.update(gamesTable).set({
-          status: "finished",
-          result: "draw",
-          resultReason: "agreement",
-          drawOfferedBy: null,
-        }).where(eq(gamesTable.id, gameId));
-
+        const updated = await acceptDraw(gameId, playerId);
         clearGameHistory(gameId);
         gameMoveTimestamps.delete(gameId);
-
         io.to(`game:${gameId}`).emit("game:over", {
           gameId,
-          result: "draw",
-          resultReason: "agreement",
+          result: updated.result,
+          resultReason: updated.resultReason,
         });
+        logger.info({ gameId, playerId }, "Draw accepted, ratings updated");
       } catch (err) {
         logger.error({ err, gameId }, "Error accepting draw");
       }

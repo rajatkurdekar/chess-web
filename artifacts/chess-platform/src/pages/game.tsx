@@ -180,24 +180,29 @@ function MoveList({ moves, currentMoveIdx }: { moves: Array<{ san: string; uci: 
 function GameOverOverlay({
   game,
   isWhitePlayer,
+  isSpectator,
   onAnalyze,
   onHome,
 }: {
   game: Game;
   isWhitePlayer: boolean;
+  isSpectator: boolean;
   onAnalyze: () => void;
   onHome: () => void;
 }) {
   const myColor = isWhitePlayer ? "white" : "black";
-  const won = game.result === myColor;
   const drew = game.result === "draw";
+  const won = !isSpectator && game.result === myColor;
+
+  const emoji = drew ? "🤝" : isSpectator ? "♟" : won ? "🏆" : "💔";
+  const headline = drew ? "Draw" : isSpectator ? "Game Over" : won ? "Victory!" : "Defeat";
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center rounded-sm z-50 backdrop-blur-md bg-black/65">
       <div className="text-center space-y-3 p-6">
-        <div className="text-6xl mb-2">{drew ? "🤝" : won ? "🏆" : "💔"}</div>
+        <div className="text-6xl mb-2">{emoji}</div>
         <div className="font-display text-3xl font-bold text-white">
-          {drew ? "Draw" : won ? "Victory!" : "Defeat"}
+          {headline}
         </div>
         <div className="text-base text-white/70 capitalize">
           {game.result === "white"
@@ -378,6 +383,7 @@ export default function GamePage() {
               <GameOverOverlay
                 game={game}
                 isWhitePlayer={isWhitePlayer}
+                isSpectator={isSpectator}
                 onAnalyze={() => setLocation(`/analysis/${gameId}`)}
                 onHome={() => setLocation("/")}
               />

@@ -143,6 +143,7 @@ export async function joinRoom(playerId: string, roomCode: string): Promise<Game
   const isBlackEmpty = !game.blackPlayerId;
 
   if (!isWhiteEmpty && !isBlackEmpty) throw new Error("Room is full");
+  if (game.whitePlayerId === playerId || game.blackPlayerId === playerId) throw new Error("You cannot join your own room");
 
   const updates: Partial<typeof gamesTable.$inferInsert> = { status: "active" };
   if (isWhiteEmpty) {
