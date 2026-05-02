@@ -159,9 +159,7 @@ export default function Play() {
   const startLocalGame = useCallback(() => {
     setLocal({
       fen: INITIAL_FEN,
-      orientation: "white",
       activeColor: "white",
-      showPass: false,
       whiteMs: timeChoice,
       blackMs: timeChoice,
       timeChoiceMs: timeChoice,
@@ -176,7 +174,7 @@ export default function Play() {
   // ── Handle local move ───────────────────────────────────────────────────────
   const handleLocalMove = useCallback((uci: string) => {
     setLocal(prev => {
-      if (!prev || prev.showPass || prev.gameOver) return prev;
+      if (!prev || prev.gameOver) return prev;
       try {
         const chess = new Chess(prev.fen);
         chess.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] || undefined });
@@ -197,24 +195,11 @@ export default function Play() {
           fen: newFen,
           activeColor: newColor,
           moves: [...prev.moves, uci],
-          showPass: !gameOver,
           gameOver,
         };
       } catch {
         return prev;
       }
-    });
-  }, []);
-
-  // ── Pass screen confirm ──────────────────────────────────────────────────────
-  const handlePassConfirm = useCallback(() => {
-    setLocal(prev => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        showPass: false,
-        orientation: prev.orientation === "white" ? "black" : "white",
-      };
     });
   }, []);
 
@@ -354,7 +339,6 @@ export default function Play() {
             {/* ── Room Invite Card ── */}
             <button
               onClick={() => {
-                if (!player) { setLocation("/auth"); return; }
                 setMode("room");
                 handleCreateRoom();
               }}
