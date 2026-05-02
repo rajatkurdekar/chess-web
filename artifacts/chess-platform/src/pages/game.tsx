@@ -371,6 +371,7 @@ export default function GamePage() {
             <ChessBoard
               fen={game.fen}
               orientation={orientation}
+              playerColor={isWhitePlayer ? "w" : isBlackPlayer ? "b" : undefined}
               onMove={(uci) => makeMove(uci)}
               disabled={!isMyTurn || isGameOver}
               lastMove={lastMove}

@@ -7,6 +7,8 @@ interface ChessBoardProps {
   fen: string;
   onMove?: (uci: string, from: string, to: string) => void;
   orientation?: "white" | "black";
+  /** Which color this player controls. Omit for local pass-and-play (active side can always move). */
+  playerColor?: "w" | "b";
   disabled?: boolean;
   lastMove?: { from: string; to: string } | null;
   onCapturedUpdate?: (white: string[], black: string[]) => void;
@@ -89,6 +91,7 @@ export function ChessBoard({
   fen,
   onMove,
   orientation = "white",
+  playerColor,
   disabled = false,
   lastMove,
   onCapturedUpdate,
@@ -137,7 +140,12 @@ export function ChessBoard({
       if (disabled || promotionPending) return;
 
       const piece = game.get(square as Square);
-      const myColor = orientation === "white" ? "w" : "b";
+      // playerColor set → online game (only that color moves).
+      // playerColor absent → local pass-and-play (whoever's turn it is moves).
+      const myColor: "w" | "b" = playerColor ?? game.turn();
+
+      // Only interact when it's this player's turn
+      if (game.turn() !== myColor) return;
 
       if (selectedSquare) {
         // ── Clicking a legal target → make the move ──
@@ -156,7 +164,6 @@ export function ChessBoard({
           }
 
           try {
-            // Clone so React knows state changed
             const next = new Chess(game.fen());
             const move = next.move({ from: selectedSquare, to: square });
             if (move) {
@@ -186,13 +193,13 @@ export function ChessBoard({
       }
 
       // ── Select piece ──
-      if (piece?.color === myColor && game.turn() === myColor) {
+      if (piece?.color === myColor) {
         setSelectedSquare(square);
         const moves = game.moves({ square: square as Square, verbose: true });
         setLegalTargets(moves.map((m) => m.to));
       }
     },
-    [disabled, game, orientation, selectedSquare, legalTargets, onMove, promotionPending]
+    [disabled, game, playerColor, selectedSquare, legalTargets, onMove, promotionPending]
   );
 
   const handlePromotion = (piece: string) => {
@@ -332,8 +339,8 @@ export function ChessBoard({
                       className={cn(
                         "absolute inset-0 flex items-center justify-center z-20 p-[5%] pointer-events-none",
                         !disabled &&
-                          piece.color === (orientation === "white" ? "w" : "b") &&
                           game.turn() === piece.color &&
+                          (playerColor === undefined || playerColor === piece.color) &&
                           "piece-lift"
                       )}
                     >
