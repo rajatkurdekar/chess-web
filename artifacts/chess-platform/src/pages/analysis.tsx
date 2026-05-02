@@ -258,7 +258,7 @@ export default function Analysis() {
               <h2 className="font-bold text-base text-foreground">
                 {game.whiteUsername}{" "}
                 <span className="text-muted-foreground font-normal text-sm">vs</span>{" "}
-                {game.blackUsername ?? "AI"}
+                {game.blackUsername ?? "Opponent"}
               </h2>
               <p className="text-xs text-muted-foreground">
                 {game.timeControl?.label} · {resultLabel}
@@ -339,7 +339,7 @@ export default function Analysis() {
                 { label: "White", value: `${game.whiteUsername} (${game.whiteRating})` },
                 {
                   label: "Black",
-                  value: `${game.blackUsername ?? "AI"} (${game.blackRating ?? "—"})`,
+                  value: `${game.blackUsername ?? "Opponent"} (${game.blackRating ?? "—"})`,
                 },
                 { label: "Time", value: game.timeControl?.label ?? "—" },
               ].map(({ label, value }) => (

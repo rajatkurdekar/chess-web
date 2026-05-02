@@ -686,7 +686,7 @@ export default function Play() {
           />
 
           {/* Resign / resign confirm */}
-          {!local.gameOver && (
+          {!local.gameOver && !local.showPass && (
             <div className="mt-4">
               <button
                 onClick={() => {

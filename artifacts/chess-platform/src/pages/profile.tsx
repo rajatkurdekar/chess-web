@@ -160,7 +160,7 @@ export default function Profile() {
               <div className="divide-y divide-white/[0.04]">
                 {games.map((g: any) => {
                   const isWhite = g.whitePlayerId === playerId;
-                  const opponent = isWhite ? (g.blackUsername ?? "AI") : g.whiteUsername;
+                  const opponent = isWhite ? (g.blackUsername ?? "Opponent") : g.whiteUsername;
                   const myColor = isWhite ? "white" : "black";
                   const myResult: "win" | "loss" | "draw" = g.result === "draw" ? "draw" : g.result === myColor ? "win" : "loss";
 
