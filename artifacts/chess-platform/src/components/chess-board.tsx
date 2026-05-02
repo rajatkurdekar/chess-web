@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Chess, Square } from "chess.js";
 import { cn } from "@/lib/utils";
-import { ChessPiece } from "@/components/chess-pieces";
+import { ChessPiece, ChessDefs } from "@/components/chess-pieces";
 
 interface ChessBoardProps {
   fen: string;
@@ -233,6 +233,7 @@ export function ChessBoard({
 
   return (
     <div className="flex flex-col w-full max-w-[580px] select-none">
+      <ChessDefs />
       {/* Board */}
       <div className="relative w-full aspect-square board-shadow rounded-sm overflow-visible">
         <div className="grid grid-cols-8 grid-rows-8 w-full h-full rounded-sm overflow-hidden">
