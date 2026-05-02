@@ -8,6 +8,9 @@ export const getSocket = () => {
   if (!socketInstance) {
     socketInstance = io(window.location.origin, {
       path: "/api/ws/socket.io",
+      // polling first so the connection works in both serverless (Vercel) and
+      // long-running server environments; upgrades to WebSocket when available.
+      transports: ["polling", "websocket"],
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 10,

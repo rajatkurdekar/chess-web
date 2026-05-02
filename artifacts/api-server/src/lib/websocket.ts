@@ -75,8 +75,13 @@ export function createWebSocketServer(httpServer: HttpServer): SocketIOServer {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
+      credentials: true,
     },
     path: "/api/ws/socket.io",
+    // Accept both polling and WebSocket transports.
+    // Polling works in serverless environments (Vercel); WebSocket is used when available.
+    transports: ["polling", "websocket"],
+    allowEIO3: true,
   });
 
   io.on("connection", (socket) => {
