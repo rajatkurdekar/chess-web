@@ -109,6 +109,7 @@ function LocalPlayerBar({
 // ─── Main Component ─────────────────────────────────────────────────────────────
 export default function Play() {
   const { player } = useAuth();
+  const [, setLocation] = useLocation();
   const createRoom = useCreateRoom();
 
   const [mode, setMode] = useState<Mode>("select");
