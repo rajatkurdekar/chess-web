@@ -1,21 +1,19 @@
 import type { IncomingMessage, ServerResponse } from "http";
-import { createServer } from "http";
-import app from "../artifacts/api-server/src/app";
-import { createWebSocketServer } from "../artifacts/api-server/src/lib/websocket";
 
-// Singleton HTTP+Socket.io server — reused across requests in the same container instance.
-// This keeps Socket.io room/state alive between polling requests on Vercel.
-let httpServer: ReturnType<typeof createServer> | null = null;
+// Import the pre-built serverless bundle (compiled by api-server's build step).
+// Using a JS import instead of TypeScript source avoids Vercel recompiling the
+// entire api-server workspace with its own tsconfig, which causes type errors.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mod: any = null;
 
-function getServer() {
-  if (!httpServer) {
-    httpServer = createServer(app);
-    createWebSocketServer(httpServer);
+async function getServer() {
+  if (!mod) {
+    mod = await import("../artifacts/api-server/dist/serverless.mjs");
   }
-  return httpServer;
+  return mod.getServer();
 }
 
-export default function handler(req: IncomingMessage, res: ServerResponse) {
-  // Forward the request to the Express + Socket.io server
-  getServer().emit("request", req, res);
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
+  const server = await getServer();
+  server.emit("request", req, res);
 }
