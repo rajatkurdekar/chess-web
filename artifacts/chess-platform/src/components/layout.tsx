@@ -24,7 +24,7 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* ── Premium Navbar ── */}
         <header className="sticky top-0 z-50"
           style={{
-            background: "rgba(247,248,252,0.92)",
+            background: "rgba(248,244,238,0.92)",
             backdropFilter: "blur(28px)",
             WebkitBackdropFilter: "blur(28px)",
             borderBottom: "1px solid rgba(61,109,121,0.1)",
@@ -54,8 +54,8 @@ export function Layout({ children }: { children: ReactNode }) {
                   ♞
                 </div>
               </div>
-              <span style={{ fontFamily: "'Bodoni Moda', serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
-                <span style={{ color: "#0f1624" }}>Chess</span>
+              <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
+                <span style={{ color: "#1a1108" }}>Chess</span>
                 <span style={{
                   background: "linear-gradient(135deg, #3d6d79, #d69d66)",
                   WebkitBackgroundClip: "text",
@@ -147,7 +147,7 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* ── Mobile Bottom Nav ── */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50"
           style={{
-            background: "rgba(247,248,252,0.96)",
+            background: "rgba(248,244,238,0.96)",
             backdropFilter: "blur(24px)",
             borderTop: "1px solid rgba(61,109,121,0.1)",
           }}>
@@ -191,10 +191,10 @@ export function Layout({ children }: { children: ReactNode }) {
         </nav>
 
         {/* ── Footer ── */}
-        <footer className="hidden md:block" style={{ borderTop: "1px solid rgba(61,109,121,0.08)", background: "rgba(247,248,252,0.9)" }}>
+        <footer className="hidden md:block" style={{ borderTop: "1px solid rgba(61,109,121,0.08)", background: "rgba(248,244,238,0.9)" }}>
           <div className="max-w-7xl mx-auto px-5 py-6 flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <span style={{ fontFamily: "'Bodoni Moda', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.45, letterSpacing: "-0.02em" }}>
+              <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.45, letterSpacing: "-0.02em" }}>
                 <span style={{ color: "#0f1624" }}>Chess</span>
                 <span style={{
                   background: "linear-gradient(135deg, #3d6d79, #d69d66)",

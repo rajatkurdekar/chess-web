@@ -66,22 +66,22 @@ export default function Home() {
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden rounded-2xl min-h-[520px] sm:min-h-[620px] flex items-center mb-12 sm:mb-16"
           style={{
-            background: "#f7f8fc",
+            background: "#f8f4ee",
             boxShadow: "0 0 0 1px rgba(61,109,121,0.1), 0 40px 100px rgba(0,0,0,0.07)",
           }}>
 
           {/* Background photo */}
           <div className="absolute inset-0"
             style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=1920&q=80')",
+              backgroundImage: "url('https://images.unsplash.com/photo-1528819622765-d6bcf132f793?auto=format&fit=crop&w=2400&q=80')",
               backgroundSize: "cover",
               backgroundPosition: "center right",
-              opacity: 0.12,
+              opacity: 0.18,
             }} />
 
           {/* Gradient overlay */}
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(105deg, rgba(247,248,252,1) 0%, rgba(247,248,252,0.97) 40%, rgba(247,248,252,0.72) 100%)" }} />
+            style={{ background: "linear-gradient(105deg, rgba(248,244,238,0.97) 0%, rgba(248,244,238,0.93) 42%, rgba(248,244,238,0.6) 100%)" }} />
 
           {/* Aurora glows */}
           <div className="absolute top-0 left-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] pointer-events-none"
@@ -119,9 +119,9 @@ export default function Home() {
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 mb-6 sm:mb-8 text-xs font-semibold"
                 style={{
-                  background: "rgba(61,109,121,0.1)",
-                  border: "1px solid rgba(61,109,121,0.28)",
-                  color: "#3d6d79",
+                  background: "rgba(214,157,102,0.1)",
+                  border: "1px solid rgba(214,157,102,0.22)",
+                  color: "#7a5a3f",
                   backdropFilter: "blur(10px)",
                 }}
               >
@@ -136,7 +136,7 @@ export default function Home() {
               <h1 className="display-hero-syne mb-5 sm:mb-7">
                 <SplitText
                   text="Where"
-                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-[#0f1624]"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-[#1a1108]"
                   delay={0.1}
                   stagger={0.04}
                 />
@@ -148,7 +148,7 @@ export default function Home() {
                 />
                 <SplitText
                   text="Are Forged"
-                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-[#0f1624]/70"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-[#1a1108]/70"
                   delay={0.6}
                   stagger={0.03}
                 />
@@ -156,7 +156,7 @@ export default function Home() {
 
               {/* Subtitle */}
               <LineReveal delay={1.0}>
-                <p className="text-[#0f1624]/60 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed max-w-xl">
+                <p className="text-[#1a1108]/60 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed max-w-xl">
                   Challenge rivals with a private invite code or duel face-to-face.
                   Track your ELO, analyse every move, and rise through the ranks.
                 </p>
@@ -172,7 +172,7 @@ export default function Home() {
                 <MagneticBtn
                   onClick={() => setLocation("/play")}
                   className="btn-spectral flex items-center justify-center gap-2.5 px-9 py-4 rounded-xl text-sm font-black w-full sm:w-auto"
-                  style={{ fontFamily: "'Bodoni Moda', serif", letterSpacing: "0.02em" }}
+                  style={{ fontFamily: "'Fraunces', serif", letterSpacing: "0.02em" }}
                 >
                   ♟ Play Now
                 </MagneticBtn>
@@ -183,7 +183,7 @@ export default function Home() {
                   style={{
                     background: "rgba(61,109,121,0.07)",
                     border: "1px solid rgba(61,109,121,0.22)",
-                    color: "#0f1624",
+                    color: "#1a1108",
                     backdropFilter: "blur(8px)",
                   }}
                 >
@@ -208,7 +208,7 @@ export default function Home() {
                     <div key={s.label}>
                       <div
                         className="font-black gradient-text-spectral stat-glow-spectral tabular-nums"
-                        style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "2.1rem", lineHeight: 1 }}
+                        style={{ fontFamily: "'Fraunces', serif", fontSize: "2.1rem", lineHeight: 1 }}
                       >
                         <CountUp to={s.value} delay={1.6 + i * 0.12} />
                       </div>
@@ -260,7 +260,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="flex items-end justify-between mb-8">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#1a1108]" style={{ fontFamily: "'Fraunces', serif" }}>
                   Choose Your Battle
                 </h2>
                 <p className="text-sm text-muted-foreground mt-2">Two warriors. One board. Your rules.</p>
@@ -304,7 +304,7 @@ export default function Home() {
                   >♞</motion.div>
                   <div>
                     <div className="flex items-center flex-wrap gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>Local Duel</h3>
+                      <h3 className="text-xl font-black text-[#1a1108]" style={{ fontFamily: "'Fraunces', serif" }}>Local Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
                         style={{ background: "rgba(214,157,102,0.1)", color: "#d69d66", border: "1px solid rgba(214,157,102,0.22)" }}>
                         Same Device
@@ -368,7 +368,7 @@ export default function Home() {
                   >♛</motion.div>
                   <div>
                     <div className="flex items-center flex-wrap gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>Invite to Duel</h3>
+                      <h3 className="text-xl font-black text-[#1a1108]" style={{ fontFamily: "'Fraunces', serif" }}>Invite to Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
                         style={{ background: "rgba(61,109,121,0.1)", color: "#3d6d79", border: "1px solid rgba(61,109,121,0.25)" }}>
                         Online
@@ -411,7 +411,7 @@ export default function Home() {
           {/* Features — 3 cols */}
           <section className="lg:col-span-3">
             <ScrollReveal>
-              <h2 className="text-2xl font-black mb-8 text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>
+              <h2 className="text-2xl font-black mb-8 text-[#1a1108]" style={{ fontFamily: "'Fraunces', serif" }}>
                 Platform Features
               </h2>
             </ScrollReveal>
@@ -438,7 +438,7 @@ export default function Home() {
           <section className="lg:col-span-2">
             <ScrollReveal delay={0.15}>
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>Top Players</h2>
+                <h2 className="text-2xl font-black text-[#1a1108]" style={{ fontFamily: "'Fraunces', serif" }}>Top Players</h2>
                 <Link href="/leaderboard"
                   className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors font-medium">
                   Full table <ArrowRight className="w-3.5 h-3.5" />
@@ -487,7 +487,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="gradient-text-gold font-black text-base tabular-nums flex-shrink-0"
-                          style={{ fontFamily: "'Bodoni Moda', serif" }}>
+                          style={{ fontFamily: "'Fraunces', serif" }}>
                           {p.rating}
                         </div>
                       </Link>
@@ -555,7 +555,7 @@ export default function Home() {
               >
                 ♔
               </motion.div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f1624] mb-4" style={{ fontFamily: "'Bodoni Moda', serif" }}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#1a1108] mb-4" style={{ fontFamily: "'Fraunces', serif" }}>
                 Ready to Prove Your Worth?
               </h2>
               <p className="text-muted-foreground mb-9 max-w-md mx-auto text-sm leading-relaxed">
@@ -565,7 +565,7 @@ export default function Home() {
               <MagneticBtn
                 onClick={() => setLocation(player ? "/play" : "/auth")}
                 className="btn-spectral inline-flex items-center gap-3 px-12 py-4 rounded-xl text-sm font-black"
-                style={{ fontFamily: "'Bodoni Moda', serif", letterSpacing: "0.02em" }}
+                style={{ fontFamily: "'Fraunces', serif", letterSpacing: "0.02em" }}
               >
                 ♟ {player ? "Play Now" : "Join ChessForge"}
               </MagneticBtn>

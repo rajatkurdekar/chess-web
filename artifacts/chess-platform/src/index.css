@@ -34,21 +34,21 @@
 
 :root, .dark {
   /* ── Core Background ── */
-  --background: #f7f8fc;
-  --foreground: #0f1624;
+  --background: #f8f4ee;
+  --foreground: #1a1108;
 
   /* ── Surfaces ── */
-  --card: #ffffff;
-  --card-foreground: #0f1624;
-  --card-border: rgba(61,109,121,0.1);
+  --card: #fefcf8;
+  --card-foreground: #1a1108;
+  --card-border: rgba(180,140,90,0.14);
 
-  --popover: #ffffff;
-  --popover-foreground: #0f1624;
-  --popover-border: rgba(61,109,121,0.12);
+  --popover: #fefcf8;
+  --popover-foreground: #1a1108;
+  --popover-border: rgba(180,140,90,0.16);
 
   /* ── Inputs ── */
-  --border: rgba(61,109,121,0.12);
-  --input: #f0f2f7;
+  --border: rgba(180,140,90,0.16);
+  --input: #f5f0e8;
   --ring: #3d6d79;
 
   /* ── Brand — Teal ── */
@@ -56,12 +56,12 @@
   --primary-foreground: #ffffff;
 
   /* ── Secondary ── */
-  --secondary: #eef0f7;
-  --secondary-foreground: #0f1624;
+  --secondary: #f2ece0;
+  --secondary-foreground: #1a1108;
 
   /* ── Muted ── */
-  --muted: #eef0f7;
-  --muted-foreground: #526070;
+  --muted: #f2ece0;
+  --muted-foreground: #6b5a42;
 
   /* ── Accent — Amber ── */
   --accent: #d69d66;
@@ -132,14 +132,14 @@ html { scroll-behavior: smooth; }
   line-height: 1.0;
 }
 
-/* Hero font — Bodoni Moda (Harmond Display equivalent: extreme Didone contrast) */
+/* Hero font — Fraunces (Milky Walky equivalent: optical-size, thin ligature serif) */
 .display-hero-syne {
-  font-family: 'Bodoni Moda', serif;
+  font-family: 'Fraunces', serif;
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 96;
-  letter-spacing: 0em;
-  line-height: 1.06;
-  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  font-weight: 300;
+  font-variation-settings: 'SOFT' 0, 'WONK' 0;
 }
 
 /* ─── Amber Gradient Text (hero accent) ─────────────────────────────────────── */
@@ -203,27 +203,27 @@ html { scroll-behavior: smooth; }
 
 /* ─── Premium Glass Cards ───────────────────────────────────────────────────── */
 .glass-card {
-  background: rgba(255,255,255,0.85);
+  background: rgba(254,252,248,0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(61,109,121,0.1);
+  border: 1px solid rgba(180,140,90,0.12);
 }
 
 .glass-card-bright {
-  background: rgba(255,255,255,0.92);
+  background: rgba(254,252,248,0.92);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(61,109,121,0.12);
+  border: 1px solid rgba(180,140,90,0.14);
 }
 
 .glass-gold {
-  background: linear-gradient(135deg, rgba(214,157,102,0.07) 0%, rgba(255,255,255,0.92) 60%);
+  background: linear-gradient(135deg, rgba(214,157,102,0.08) 0%, rgba(254,252,248,0.92) 60%);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(214,157,102,0.18);
 }
 
 .glass-emerald {
-  background: linear-gradient(135deg, rgba(61,109,121,0.07) 0%, rgba(255,255,255,0.92) 60%);
+  background: linear-gradient(135deg, rgba(61,109,121,0.07) 0%, rgba(254,252,248,0.92) 60%);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(61,109,121,0.18);
 }
@@ -249,8 +249,8 @@ html { scroll-behavior: smooth; }
 /* ─── Chess Board ───────────────────────────────────────────────────────────── */
 .board-shadow {
   box-shadow:
-    0 0 0 3px #f7f8fc,
-    0 0 0 5px rgba(61,109,121,0.12),
+    0 0 0 3px #f8f4ee,
+    0 0 0 5px rgba(180,140,90,0.14),
     0 32px 80px rgba(0,0,0,0.12),
     0 12px 32px rgba(0,0,0,0.08),
     0 0 60px rgba(61,109,121,0.06);
@@ -292,11 +292,11 @@ html { scroll-behavior: smooth; }
 
 /* ─── Animated Background ───────────────────────────────────────────────────── */
 .chess-pattern-bg {
-  background-color: #f7f8fc;
+  background-color: #f8f4ee;
   background-image:
-    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(61,109,121,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 40% at 80% 80%, rgba(214,157,102,0.04) 0%, transparent 60%),
-    repeating-conic-gradient(rgba(61,109,121,0.022) 0% 25%, transparent 0% 50%);
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(214,157,102,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 40% at 80% 80%, rgba(61,109,121,0.04) 0%, transparent 60%),
+    repeating-conic-gradient(rgba(180,140,90,0.05) 0% 25%, transparent 0% 50%);
   background-size: 100%, 100%, 56px 56px;
 }
 
