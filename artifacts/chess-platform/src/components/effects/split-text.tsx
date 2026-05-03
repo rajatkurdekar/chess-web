@@ -33,7 +33,7 @@ export function SplitText({
       {words.map((word, wi) => (
         <span
           key={wi}
-          style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", marginRight: "0.28em" }}
+          style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", marginRight: "0.22em", paddingTop: "0.12em", paddingBottom: "0.1em" }}
         >
           {word.split("").map((char, ci) => {
             const idx = charCount++;
