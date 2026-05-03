@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "pnpm install",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "(pnpm --filter @workspace/db run push || echo 'DB push skipped — ensure DATABASE_URL is set in Vercel env') && pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/chess-platform run build",
   "outputDirectory": "artifacts/chess-platform/dist/public",
   "build": {
