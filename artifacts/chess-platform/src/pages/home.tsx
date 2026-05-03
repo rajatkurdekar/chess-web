@@ -24,29 +24,29 @@ const FEATURES = [
     icon: Swords,
     title: "Local Duel",
     desc: "Two players. One screen. Pass the device between moves — no internet required.",
-    color: "#C9A84C",
-    ca: "rgba(201,168,76,",
+    color: "#d69d66",
+    ca: "rgba(214,157,102,",
   },
   {
     icon: Users,
     title: "Invite to Duel",
     desc: "Generate a private room code. Share it with a rival. Play in real-time from anywhere on the globe.",
-    color: "#10B981",
-    ca: "rgba(16,185,129,",
+    color: "#3d6d79",
+    ca: "rgba(61,109,121,",
   },
   {
     icon: TrendingUp,
     title: "ELO Rankings",
     desc: "Every game shapes your rating. Climb the ladder with the industry-standard ELO system.",
-    color: "#818CF8",
-    ca: "rgba(129,140,248,",
+    color: "#e0e2ee",
+    ca: "rgba(224,226,238,",
   },
   {
     icon: Shield,
     title: "Fair Play",
     desc: "Human vs Human only. No engines. No bots. Chess decided purely by intellect and nerve.",
-    color: "#F87171",
-    ca: "rgba(248,113,113,",
+    color: "#d69d66",
+    ca: "rgba(214,157,102,",
   },
 ];
 
@@ -64,7 +64,7 @@ export default function Home() {
         {/* ═══════════════════════════════════════════════════════════════════ */}
         {/* HERO — full-height cinematic                                        */}
         {/* ═══════════════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden rounded-2xl min-h-[600px] flex items-center mb-16"
+        <section className="relative overflow-hidden rounded-2xl min-h-[520px] sm:min-h-[620px] flex items-center mb-12 sm:mb-16"
           style={{
             background: "#060810",
             boxShadow: "0 0 0 1px rgba(255,255,255,0.05), 0 40px 100px rgba(0,0,0,0.7)",
@@ -76,23 +76,23 @@ export default function Home() {
               backgroundImage: "url('https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=1920&q=80')",
               backgroundSize: "cover",
               backgroundPosition: "center right",
-              opacity: 0.14,
+              opacity: 0.12,
             }} />
 
           {/* Gradient overlay */}
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(105deg, rgba(6,8,16,1) 0%, rgba(6,8,16,0.95) 40%, rgba(6,8,16,0.65) 100%)" }} />
+            style={{ background: "linear-gradient(105deg, rgba(6,8,16,1) 0%, rgba(6,8,16,0.96) 40%, rgba(6,8,16,0.7) 100%)" }} />
 
           {/* Aurora glows */}
-          <div className="absolute top-0 left-0 w-[600px] h-[600px] pointer-events-none"
+          <div className="absolute top-0 left-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] pointer-events-none"
             style={{
-              background: "radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(61,109,121,0.12) 0%, transparent 70%)",
               filter: "blur(60px)",
               animation: "aurora-drift 8s ease-in-out infinite alternate",
             }} />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] pointer-events-none"
+          <div className="absolute bottom-0 right-0 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] pointer-events-none"
             style={{
-              background: "radial-gradient(circle, rgba(201,168,76,0.10) 0%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(214,157,102,0.12) 0%, transparent 70%)",
               filter: "blur(60px)",
               animation: "aurora-drift 10s ease-in-out infinite alternate-reverse",
             }} />
@@ -109,7 +109,7 @@ export default function Home() {
           <ParticleField count={20} />
 
           {/* Content */}
-          <div className="relative z-10 px-8 md:px-14 py-20 w-full">
+          <div className="relative z-10 px-5 sm:px-8 md:px-14 py-12 sm:py-16 md:py-20 w-full">
             <div className="max-w-3xl">
 
               {/* Live badge */}
@@ -117,11 +117,11 @@ export default function Home() {
                 initial={{ opacity: 0, y: -12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 mb-8 text-xs font-semibold"
+                className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 mb-6 sm:mb-8 text-xs font-semibold"
                 style={{
-                  background: "rgba(16,185,129,0.07)",
-                  border: "1px solid rgba(16,185,129,0.2)",
-                  color: "#10B981",
+                  background: "rgba(61,109,121,0.1)",
+                  border: "1px solid rgba(61,109,121,0.28)",
+                  color: "#3d6d79",
                   backdropFilter: "blur(10px)",
                 }}
               >
@@ -133,22 +133,22 @@ export default function Home() {
               </motion.div>
 
               {/* Main headline with split text animation */}
-              <h1 className="display-hero-syne mb-7">
+              <h1 className="display-hero-syne mb-5 sm:mb-7">
                 <SplitText
                   text="Where"
-                  className="block text-5xl md:text-6xl lg:text-[88px] font-black text-white/90"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-white"
                   delay={0.1}
                   stagger={0.04}
                 />
                 <SplitText
                   text="Champions"
-                  className="block text-5xl md:text-6xl lg:text-[88px] font-black gradient-text-spectral"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black gradient-text-spectral"
                   delay={0.3}
                   stagger={0.035}
                 />
                 <SplitText
                   text="Are Forged"
-                  className="block text-5xl md:text-6xl lg:text-[88px] font-black text-white/80"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-white/80"
                   delay={0.6}
                   stagger={0.03}
                 />
@@ -156,7 +156,7 @@ export default function Home() {
 
               {/* Subtitle */}
               <LineReveal delay={1.0}>
-                <p className="text-[#7A8799] text-lg md:text-xl mb-10 leading-relaxed max-w-xl">
+                <p className="text-[#e0e2ee]/70 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed max-w-xl">
                   Challenge rivals with a private invite code or duel face-to-face.
                   Track your ELO, analyse every move, and rise through the ranks.
                 </p>
@@ -164,14 +164,14 @@ export default function Home() {
 
               {/* CTAs */}
               <motion.div
-                className="flex flex-wrap gap-3 mb-14"
+                className="flex flex-col sm:flex-row flex-wrap gap-3 mb-10 sm:mb-14"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
               >
                 <MagneticBtn
                   onClick={() => setLocation("/play")}
-                  className="btn-spectral flex items-center gap-2.5 px-9 py-4 rounded-xl text-sm font-black"
+                  className="btn-spectral flex items-center justify-center gap-2.5 px-9 py-4 rounded-xl text-sm font-black w-full sm:w-auto"
                   style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "0.02em" }}
                 >
                   ♟ Play Now
@@ -179,23 +179,23 @@ export default function Home() {
 
                 <MagneticBtn
                   onClick={() => setLocation(player ? "/leaderboard" : "/auth")}
-                  className="flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold transition-all"
+                  className="flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold transition-all w-full sm:w-auto"
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: "#C4CFDF",
+                    background: "rgba(61,109,121,0.08)",
+                    border: "1px solid rgba(61,109,121,0.25)",
+                    color: "#e0e2ee",
                     backdropFilter: "blur(8px)",
                   }}
                 >
-                  {player ? <><Trophy className="w-4 h-4 text-accent" />Leaderboard</> : <>Create Account<ArrowRight className="w-4 h-4" /></>}
+                  {player ? <><Trophy className="w-4 h-4" style={{ color: "#d69d66" }} />Leaderboard</> : <>Create Account<ArrowRight className="w-4 h-4" /></>}
                 </MagneticBtn>
               </motion.div>
 
               {/* Live Stats with CountUp */}
               {stats && (
                 <motion.div
-                  className="flex items-center gap-10 pt-8"
-                  style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+                  className="flex items-center flex-wrap gap-6 sm:gap-10 pt-6 sm:pt-8"
+                  style={{ borderTop: "1px solid rgba(61,109,121,0.2)" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.7, delay: 1.5 }}
@@ -260,7 +260,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="flex items-end justify-between mb-8">
               <div>
-                <h2 className="text-3xl font-black text-white" style={{ fontFamily: "'Cinzel', serif" }}>
+                <h2 className="text-2xl sm:text-3xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>
                   Choose Your Battle
                 </h2>
                 <p className="text-sm text-muted-foreground mt-2">Two warriors. One board. Your rules.</p>
@@ -279,58 +279,58 @@ export default function Home() {
                 className="relative overflow-hidden rounded-2xl cursor-pointer h-full"
                 style={{
                   background: hoveredMode === "local"
-                    ? "radial-gradient(ellipse at 25% 75%, rgba(201,168,76,0.18) 0%, rgba(6,8,16,0.97) 65%)"
-                    : "radial-gradient(ellipse at 25% 75%, rgba(201,168,76,0.08) 0%, rgba(6,8,16,0.97) 65%)",
-                  border: hoveredMode === "local" ? "1px solid rgba(201,168,76,0.38)" : "1px solid rgba(201,168,76,0.14)",
-                  boxShadow: hoveredMode === "local" ? "0 0 80px rgba(201,168,76,0.12)" : "none",
+                    ? "radial-gradient(ellipse at 25% 75%, rgba(214,157,102,0.18) 0%, rgba(6,8,16,0.97) 65%)"
+                    : "radial-gradient(ellipse at 25% 75%, rgba(214,157,102,0.08) 0%, rgba(6,8,16,0.97) 65%)",
+                  border: hoveredMode === "local" ? "1px solid rgba(214,157,102,0.38)" : "1px solid rgba(214,157,102,0.16)",
+                  boxShadow: hoveredMode === "local" ? "0 0 80px rgba(214,157,102,0.12)" : "none",
                 }}
                 onClick={() => setLocation("/play")}
                 onMouseEnter={() => setHoveredMode("local")}
                 onMouseLeave={() => setHoveredMode(null)}
               >
                 <div className="absolute right-4 bottom-0 text-[170px] leading-none select-none pointer-events-none"
-                  style={{ opacity: hoveredMode === "local" ? 0.055 : 0.025, transition: "opacity 0.5s", color: "#C9A84C" }}>
+                  style={{ opacity: hoveredMode === "local" ? 0.055 : 0.025, transition: "opacity 0.5s", color: "#d69d66" }}>
                   ♟
                 </div>
-                <div className="relative p-8 space-y-5">
+                <div className="relative p-6 sm:p-8 space-y-5">
                   <motion.div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
                     whileHover={{ rotate: [0, -10, 10, 0] }}
                     transition={{ duration: 0.4 }}
                     style={{
-                      background: "linear-gradient(135deg, rgba(201,168,76,0.22), rgba(201,168,76,0.07))",
-                      border: "1px solid rgba(201,168,76,0.3)",
+                      background: "linear-gradient(135deg, rgba(214,157,102,0.22), rgba(214,157,102,0.07))",
+                      border: "1px solid rgba(214,157,102,0.3)",
                     }}
                   >♞</motion.div>
                   <div>
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-white" style={{ fontFamily: "'Cinzel', serif" }}>Local Duel</h3>
+                    <div className="flex items-center flex-wrap gap-2.5 mb-2">
+                      <h3 className="text-xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>Local Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
-                        style={{ background: "rgba(201,168,76,0.1)", color: "#C9A84C", border: "1px solid rgba(201,168,76,0.22)" }}>
+                        style={{ background: "rgba(214,157,102,0.1)", color: "#d69d66", border: "1px solid rgba(214,157,102,0.22)" }}>
                         Same Device
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm leading-relaxed" style={{ color: "#e0e2ee" }}>
                       Two players share one screen. Pass the board between moves. No internet. Just two minds.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["Pass & Play", "Offline", "Custom Names", "Timed or Free"].map(f => (
                       <span key={f} className="text-[11px] font-medium px-2.5 py-1 rounded-full"
-                        style={{ background: "rgba(201,168,76,0.07)", color: "rgba(201,168,76,0.65)", border: "1px solid rgba(201,168,76,0.12)" }}>
+                        style={{ background: "rgba(214,157,102,0.07)", color: "rgba(214,157,102,0.75)", border: "1px solid rgba(214,157,102,0.14)" }}>
                         {f}
                       </span>
                     ))}
                   </div>
                   <div className="flex items-center gap-2 pt-1">
-                    <span className="font-bold text-sm" style={{ color: "#C9A84C" }}>Start local battle</span>
+                    <span className="font-bold text-sm" style={{ color: "#d69d66" }}>Start local battle</span>
                     <motion.div
                       animate={{ x: hoveredMode === "local" ? 6 : 0 }}
                       transition={{ duration: 0.25 }}
                       className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ background: "rgba(201,168,76,0.18)" }}
+                      style={{ background: "rgba(214,157,102,0.18)" }}
                     >
-                      <ArrowRight className="w-3 h-3" style={{ color: "#C9A84C" }} />
+                      <ArrowRight className="w-3 h-3" style={{ color: "#d69d66" }} />
                     </motion.div>
                   </div>
                 </div>
@@ -343,58 +343,58 @@ export default function Home() {
                 className="relative overflow-hidden rounded-2xl cursor-pointer h-full"
                 style={{
                   background: hoveredMode === "invite"
-                    ? "radial-gradient(ellipse at 75% 25%, rgba(16,185,129,0.18) 0%, rgba(6,8,16,0.97) 65%)"
-                    : "radial-gradient(ellipse at 75% 25%, rgba(16,185,129,0.08) 0%, rgba(6,8,16,0.97) 65%)",
-                  border: hoveredMode === "invite" ? "1px solid rgba(16,185,129,0.38)" : "1px solid rgba(16,185,129,0.14)",
-                  boxShadow: hoveredMode === "invite" ? "0 0 80px rgba(16,185,129,0.12)" : "none",
+                    ? "radial-gradient(ellipse at 75% 25%, rgba(61,109,121,0.18) 0%, rgba(6,8,16,0.97) 65%)"
+                    : "radial-gradient(ellipse at 75% 25%, rgba(61,109,121,0.08) 0%, rgba(6,8,16,0.97) 65%)",
+                  border: hoveredMode === "invite" ? "1px solid rgba(61,109,121,0.4)" : "1px solid rgba(61,109,121,0.16)",
+                  boxShadow: hoveredMode === "invite" ? "0 0 80px rgba(61,109,121,0.14)" : "none",
                 }}
                 onClick={() => setLocation("/play")}
                 onMouseEnter={() => setHoveredMode("invite")}
                 onMouseLeave={() => setHoveredMode(null)}
               >
                 <div className="absolute left-4 bottom-0 text-[170px] leading-none select-none pointer-events-none"
-                  style={{ opacity: hoveredMode === "invite" ? 0.055 : 0.025, transition: "opacity 0.5s", color: "#10B981" }}>
+                  style={{ opacity: hoveredMode === "invite" ? 0.055 : 0.025, transition: "opacity 0.5s", color: "#3d6d79" }}>
                   ♜
                 </div>
-                <div className="relative p-8 space-y-5">
+                <div className="relative p-6 sm:p-8 space-y-5">
                   <motion.div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
                     whileHover={{ rotate: [0, -10, 10, 0] }}
                     transition={{ duration: 0.4 }}
                     style={{
-                      background: "linear-gradient(135deg, rgba(16,185,129,0.22), rgba(16,185,129,0.07))",
-                      border: "1px solid rgba(16,185,129,0.3)",
+                      background: "linear-gradient(135deg, rgba(61,109,121,0.22), rgba(61,109,121,0.07))",
+                      border: "1px solid rgba(61,109,121,0.3)",
                     }}
                   >♛</motion.div>
                   <div>
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-white" style={{ fontFamily: "'Cinzel', serif" }}>Invite to Duel</h3>
+                    <div className="flex items-center flex-wrap gap-2.5 mb-2">
+                      <h3 className="text-xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>Invite to Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
-                        style={{ background: "rgba(16,185,129,0.1)", color: "#10B981", border: "1px solid rgba(16,185,129,0.22)" }}>
+                        style={{ background: "rgba(61,109,121,0.1)", color: "#3d6d79", border: "1px solid rgba(61,109,121,0.25)" }}>
                         Online
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm leading-relaxed" style={{ color: "#e0e2ee" }}>
                       Generate a private room code, share it with your rival, and play from anywhere in real-time.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["Room Code", "Shareable Link", "Real-time", "Private"].map(f => (
                       <span key={f} className="text-[11px] font-medium px-2.5 py-1 rounded-full"
-                        style={{ background: "rgba(16,185,129,0.07)", color: "rgba(16,185,129,0.65)", border: "1px solid rgba(16,185,129,0.12)" }}>
+                        style={{ background: "rgba(61,109,121,0.07)", color: "rgba(61,109,121,0.85)", border: "1px solid rgba(61,109,121,0.14)" }}>
                         {f}
                       </span>
                     ))}
                   </div>
                   <div className="flex items-center gap-2 pt-1">
-                    <span className="font-bold text-sm" style={{ color: "#10B981" }}>Create private room</span>
+                    <span className="font-bold text-sm" style={{ color: "#3d6d79" }}>Create private room</span>
                     <motion.div
                       animate={{ x: hoveredMode === "invite" ? 6 : 0 }}
                       transition={{ duration: 0.25 }}
                       className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ background: "rgba(16,185,129,0.18)" }}
+                      style={{ background: "rgba(61,109,121,0.18)" }}
                     >
-                      <ArrowRight className="w-3 h-3" style={{ color: "#10B981" }} />
+                      <ArrowRight className="w-3 h-3" style={{ color: "#3d6d79" }} />
                     </motion.div>
                   </div>
                 </div>
@@ -411,7 +411,7 @@ export default function Home() {
           {/* Features — 3 cols */}
           <section className="lg:col-span-3">
             <ScrollReveal>
-              <h2 className="text-2xl font-black mb-8 text-white" style={{ fontFamily: "'Cinzel', serif" }}>
+              <h2 className="text-2xl font-black mb-8 text-white" style={{ fontFamily: "'Syne', sans-serif" }}>
                 Platform Features
               </h2>
             </ScrollReveal>
@@ -438,7 +438,7 @@ export default function Home() {
           <section className="lg:col-span-2">
             <ScrollReveal delay={0.15}>
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-white" style={{ fontFamily: "'Cinzel', serif" }}>Top Players</h2>
+                <h2 className="text-2xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>Top Players</h2>
                 <Link href="/leaderboard"
                   className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors font-medium">
                   Full table <ArrowRight className="w-3.5 h-3.5" />
@@ -469,12 +469,12 @@ export default function Home() {
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0"
                           style={
                             i === 0
-                              ? { background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)", color: "#C9A84C" }
+                              ? { background: "rgba(214,157,102,0.15)", border: "1px solid rgba(214,157,102,0.3)", color: "#d69d66" }
                               : i === 1
-                              ? { background: "rgba(192,192,192,0.12)", border: "1px solid rgba(192,192,192,0.25)", color: "#D0D0D0" }
+                              ? { background: "rgba(224,226,238,0.1)", border: "1px solid rgba(224,226,238,0.22)", color: "#e0e2ee" }
                               : i === 2
-                              ? { background: "rgba(205,127,50,0.12)", border: "1px solid rgba(205,127,50,0.25)", color: "#CD7F32" }
-                              : { background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.18)", color: "#10B981" }
+                              ? { background: "rgba(214,157,102,0.08)", border: "1px solid rgba(214,157,102,0.2)", color: "#d69d66" }
+                              : { background: "rgba(61,109,121,0.08)", border: "1px solid rgba(61,109,121,0.2)", color: "#3d6d79" }
                           }>
                           {p.username.charAt(0).toUpperCase()}
                         </div>
@@ -487,7 +487,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="gradient-text-gold font-black text-base tabular-nums flex-shrink-0"
-                          style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                          style={{ fontFamily: "'Syne', sans-serif" }}>
                           {p.rating}
                         </div>
                       </Link>
@@ -518,24 +518,24 @@ export default function Home() {
         {/* BOTTOM CTA BANNER — Aurora                                        */}
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <ScrollReveal delay={0.1}>
-          <section className="relative overflow-hidden rounded-2xl px-8 md:px-16 py-16 text-center mb-2"
+          <section className="relative overflow-hidden rounded-2xl px-5 sm:px-8 md:px-16 py-12 md:py-16 text-center mb-2"
             style={{
               background: "#060810",
-              border: "1px solid rgba(255,255,255,0.06)",
-              boxShadow: "0 0 100px rgba(16,185,129,0.04) inset",
+              border: "1px solid rgba(61,109,121,0.15)",
+              boxShadow: "0 0 100px rgba(61,109,121,0.05) inset",
             }}>
 
             {/* Aurora gradient */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
-              <div className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full"
+              <div className="absolute -top-20 -left-20 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full"
                 style={{
-                  background: "radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%)",
+                  background: "radial-gradient(circle, rgba(61,109,121,0.15) 0%, transparent 70%)",
                   filter: "blur(40px)",
                   animation: "aurora-drift 7s ease-in-out infinite alternate",
                 }} />
-              <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full"
+              <div className="absolute -bottom-20 -right-20 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full"
                 style={{
-                  background: "radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%)",
+                  background: "radial-gradient(circle, rgba(214,157,102,0.14) 0%, transparent 70%)",
                   filter: "blur(40px)",
                   animation: "aurora-drift 9s ease-in-out infinite alternate-reverse",
                 }} />
@@ -551,11 +551,11 @@ export default function Home() {
                 className="text-5xl mb-5"
                 animate={{ y: [0, -8, 0], rotateZ: [0, 3, -3, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                style={{ opacity: 0.5 }}
+                style={{ opacity: 0.5, color: "#d69d66" }}
               >
                 ♔
               </motion.div>
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4" style={{ fontFamily: "'Cinzel', serif" }}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-4" style={{ fontFamily: "'Syne', sans-serif" }}>
                 Ready to Prove Your Worth?
               </h2>
               <p className="text-muted-foreground mb-9 max-w-md mx-auto text-sm leading-relaxed">
