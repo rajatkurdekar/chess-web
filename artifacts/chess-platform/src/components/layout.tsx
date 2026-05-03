@@ -54,10 +54,10 @@ export function Layout({ children }: { children: ReactNode }) {
                   ♞
                 </div>
               </div>
-              <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.02em" }}>
+              <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
                 <span style={{ color: "#E2E8F4" }}>Chess</span>
                 <span style={{
-                  background: "linear-gradient(135deg, #C9A84C, #E8C875)",
+                  background: "linear-gradient(135deg, #818CF8, #C084FC, #F472B6)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -194,10 +194,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <footer className="hidden md:block" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "rgba(6,8,16,0.5)" }}>
           <div className="max-w-7xl mx-auto px-5 py-6 flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.35 }}>
+              <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.35, letterSpacing: "-0.02em" }}>
                 <span style={{ color: "#E2E8F4" }}>Chess</span>
                 <span style={{
-                  background: "linear-gradient(135deg, #C9A84C, #E8C875)",
+                  background: "linear-gradient(135deg, #818CF8, #C084FC, #F472B6)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",

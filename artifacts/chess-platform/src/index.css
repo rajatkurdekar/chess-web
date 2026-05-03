@@ -132,12 +132,55 @@ html { scroll-behavior: smooth; }
   line-height: 1.0;
 }
 
+/* Hero font — Syne geometric ultra-bold */
+.display-hero-syne {
+  font-family: 'Syne', sans-serif;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  font-weight: 800;
+}
+
 /* ─── Gold Gradient Text ────────────────────────────────────────────────────── */
 .gradient-text-gold {
   background: linear-gradient(135deg, #C9A84C 0%, #E8C875 45%, #F5E4A8 70%, #E8C875 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ─── Spectral Void — indigo → violet → purple → rose ───────────────────────── */
+.gradient-text-spectral {
+  background: linear-gradient(135deg, #818CF8 0%, #A78BFA 35%, #C084FC 65%, #F472B6 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: spectral-shift 6s ease-in-out infinite alternate;
+}
+@keyframes spectral-shift {
+  0%   { background-position: 0% center; }
+  100% { background-position: 100% center; }
+}
+
+/* Spectral CTA button */
+.btn-spectral {
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #6366F1 100%);
+  background-size: 200% auto;
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 8px 32px rgba(139,92,246,0.45), 0 0 0 1px rgba(139,92,246,0.55), inset 0 1px 0 rgba(255,255,255,0.18);
+  transition: background-position 0.4s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+.btn-spectral:hover {
+  background-position: right center;
+  box-shadow: 0 12px 52px rgba(139,92,246,0.65), 0 0 0 1px rgba(167,139,250,0.7), inset 0 1px 0 rgba(255,255,255,0.22);
+  transform: translateY(-2px);
+}
+.btn-spectral:active { transform: translateY(0); }
+
+/* Spectral stat glow */
+.stat-glow-spectral {
+  text-shadow: 0 0 24px rgba(167,139,250,0.6), 0 0 48px rgba(139,92,246,0.3);
 }
 
 .gradient-text {

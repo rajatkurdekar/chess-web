@@ -133,22 +133,22 @@ export default function Home() {
               </motion.div>
 
               {/* Main headline with split text animation */}
-              <h1 className="mb-7 leading-[0.95] tracking-tight" style={{ fontFamily: "'Cinzel', serif" }}>
+              <h1 className="display-hero-syne mb-7">
                 <SplitText
                   text="Where"
-                  className="block text-5xl md:text-6xl lg:text-[80px] font-black text-white/90"
+                  className="block text-5xl md:text-6xl lg:text-[88px] font-black text-white/90"
                   delay={0.1}
                   stagger={0.04}
                 />
                 <SplitText
                   text="Champions"
-                  className="block text-5xl md:text-6xl lg:text-[80px] font-black gradient-text-gold"
+                  className="block text-5xl md:text-6xl lg:text-[88px] font-black gradient-text-spectral"
                   delay={0.3}
                   stagger={0.035}
                 />
                 <SplitText
                   text="Are Forged"
-                  className="block text-5xl md:text-6xl lg:text-[80px] font-black text-white/85"
+                  className="block text-5xl md:text-6xl lg:text-[88px] font-black text-white/80"
                   delay={0.6}
                   stagger={0.03}
                 />
@@ -171,8 +171,8 @@ export default function Home() {
               >
                 <MagneticBtn
                   onClick={() => setLocation("/play")}
-                  className="btn-gold flex items-center gap-2.5 px-9 py-4 rounded-xl text-sm font-black"
-                  style={{ fontFamily: "'Cinzel', serif", letterSpacing: "0.05em" }}
+                  className="btn-spectral flex items-center gap-2.5 px-9 py-4 rounded-xl text-sm font-black"
+                  style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "0.02em" }}
                 >
                   ♟ Play Now
                 </MagneticBtn>
@@ -207,8 +207,8 @@ export default function Home() {
                   ].map((s, i) => (
                     <div key={s.label}>
                       <div
-                        className="font-black gradient-text-gold stat-glow tabular-nums"
-                        style={{ fontFamily: "'Cinzel', serif", fontSize: "2rem", lineHeight: 1 }}
+                        className="font-black gradient-text-spectral stat-glow-spectral tabular-nums"
+                        style={{ fontFamily: "'Syne', sans-serif", fontSize: "2.1rem", lineHeight: 1 }}
                       >
                         <CountUp to={s.value} delay={1.6 + i * 0.12} />
                       </div>
@@ -564,8 +564,8 @@ export default function Home() {
               </p>
               <MagneticBtn
                 onClick={() => setLocation(player ? "/play" : "/auth")}
-                className="btn-gold inline-flex items-center gap-3 px-12 py-4 rounded-xl text-sm font-black"
-                style={{ fontFamily: "'Cinzel', serif", letterSpacing: "0.05em" }}
+                className="btn-spectral inline-flex items-center gap-3 px-12 py-4 rounded-xl text-sm font-black"
+                style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "0.02em" }}
               >
                 ♟ {player ? "Play Now" : "Join ChessForge"}
               </MagneticBtn>
