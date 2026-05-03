@@ -172,7 +172,7 @@ export default function Home() {
                 <MagneticBtn
                   onClick={() => setLocation("/play")}
                   className="btn-spectral flex items-center justify-center gap-2.5 px-9 py-4 rounded-xl text-sm font-black w-full sm:w-auto"
-                  style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.02em" }}
+                  style={{ fontFamily: "'Bodoni Moda', serif", letterSpacing: "0.02em" }}
                 >
                   ♟ Play Now
                 </MagneticBtn>
@@ -208,7 +208,7 @@ export default function Home() {
                     <div key={s.label}>
                       <div
                         className="font-black gradient-text-spectral stat-glow-spectral tabular-nums"
-                        style={{ fontFamily: "'Playfair Display', serif", fontSize: "2.1rem", lineHeight: 1 }}
+                        style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "2.1rem", lineHeight: 1 }}
                       >
                         <CountUp to={s.value} delay={1.6 + i * 0.12} />
                       </div>
@@ -260,7 +260,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="flex items-end justify-between mb-8">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>
                   Choose Your Battle
                 </h2>
                 <p className="text-sm text-muted-foreground mt-2">Two warriors. One board. Your rules.</p>
@@ -304,7 +304,7 @@ export default function Home() {
                   >♞</motion.div>
                   <div>
                     <div className="flex items-center flex-wrap gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>Local Duel</h3>
+                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>Local Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
                         style={{ background: "rgba(214,157,102,0.1)", color: "#d69d66", border: "1px solid rgba(214,157,102,0.22)" }}>
                         Same Device
@@ -368,7 +368,7 @@ export default function Home() {
                   >♛</motion.div>
                   <div>
                     <div className="flex items-center flex-wrap gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>Invite to Duel</h3>
+                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>Invite to Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
                         style={{ background: "rgba(61,109,121,0.1)", color: "#3d6d79", border: "1px solid rgba(61,109,121,0.25)" }}>
                         Online
@@ -411,7 +411,7 @@ export default function Home() {
           {/* Features — 3 cols */}
           <section className="lg:col-span-3">
             <ScrollReveal>
-              <h2 className="text-2xl font-black mb-8 text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <h2 className="text-2xl font-black mb-8 text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>
                 Platform Features
               </h2>
             </ScrollReveal>
@@ -438,7 +438,7 @@ export default function Home() {
           <section className="lg:col-span-2">
             <ScrollReveal delay={0.15}>
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>Top Players</h2>
+                <h2 className="text-2xl font-black text-[#0f1624]" style={{ fontFamily: "'Bodoni Moda', serif" }}>Top Players</h2>
                 <Link href="/leaderboard"
                   className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors font-medium">
                   Full table <ArrowRight className="w-3.5 h-3.5" />
@@ -487,7 +487,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="gradient-text-gold font-black text-base tabular-nums flex-shrink-0"
-                          style={{ fontFamily: "'Playfair Display', serif" }}>
+                          style={{ fontFamily: "'Bodoni Moda', serif" }}>
                           {p.rating}
                         </div>
                       </Link>
@@ -555,7 +555,7 @@ export default function Home() {
               >
                 ♔
               </motion.div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f1624] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f1624] mb-4" style={{ fontFamily: "'Bodoni Moda', serif" }}>
                 Ready to Prove Your Worth?
               </h2>
               <p className="text-muted-foreground mb-9 max-w-md mx-auto text-sm leading-relaxed">
@@ -565,7 +565,7 @@ export default function Home() {
               <MagneticBtn
                 onClick={() => setLocation(player ? "/play" : "/auth")}
                 className="btn-spectral inline-flex items-center gap-3 px-12 py-4 rounded-xl text-sm font-black"
-                style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.02em" }}
+                style={{ fontFamily: "'Bodoni Moda', serif", letterSpacing: "0.02em" }}
               >
                 ♟ {player ? "Play Now" : "Join ChessForge"}
               </MagneticBtn>

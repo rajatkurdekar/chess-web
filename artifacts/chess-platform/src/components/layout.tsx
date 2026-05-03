@@ -54,7 +54,7 @@ export function Layout({ children }: { children: ReactNode }) {
                   ♞
                 </div>
               </div>
-              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
+              <span style={{ fontFamily: "'Bodoni Moda', serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
                 <span style={{ color: "#0f1624" }}>Chess</span>
                 <span style={{
                   background: "linear-gradient(135deg, #3d6d79, #d69d66)",
@@ -194,7 +194,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <footer className="hidden md:block" style={{ borderTop: "1px solid rgba(61,109,121,0.08)", background: "rgba(247,248,252,0.9)" }}>
           <div className="max-w-7xl mx-auto px-5 py-6 flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.45, letterSpacing: "-0.02em" }}>
+              <span style={{ fontFamily: "'Bodoni Moda', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.45, letterSpacing: "-0.02em" }}>
                 <span style={{ color: "#0f1624" }}>Chess</span>
                 <span style={{
                   background: "linear-gradient(135deg, #3d6d79, #d69d66)",
