@@ -60,7 +60,7 @@ router.post("/games/room", async (req, res): Promise<void> => {
   const { playerId, timeControl, playerColor } = parsed.data;
   const { game, roomCode } = await createRoom(playerId, timeControl, playerColor ?? "random");
 
-  const origin = req.headers.origin || `https://${process.env.REPLIT_DOMAINS?.split(",")[0] || "localhost"}`;
+  const origin = req.headers.origin || `https://${process.env.APP_DOMAIN || req.headers.host || "localhost"}`;
   const inviteUrl = `${origin}/game/${game.id}?room=${roomCode}`;
 
   res.status(201).json({ game, roomCode, inviteUrl });
