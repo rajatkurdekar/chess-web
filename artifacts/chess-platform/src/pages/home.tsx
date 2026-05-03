@@ -66,8 +66,8 @@ export default function Home() {
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden rounded-2xl min-h-[520px] sm:min-h-[620px] flex items-center mb-12 sm:mb-16"
           style={{
-            background: "#060810",
-            boxShadow: "0 0 0 1px rgba(255,255,255,0.05), 0 40px 100px rgba(0,0,0,0.7)",
+            background: "#f7f8fc",
+            boxShadow: "0 0 0 1px rgba(61,109,121,0.1), 0 40px 100px rgba(0,0,0,0.07)",
           }}>
 
           {/* Background photo */}
@@ -81,7 +81,7 @@ export default function Home() {
 
           {/* Gradient overlay */}
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(105deg, rgba(6,8,16,1) 0%, rgba(6,8,16,0.96) 40%, rgba(6,8,16,0.7) 100%)" }} />
+            style={{ background: "linear-gradient(105deg, rgba(247,248,252,1) 0%, rgba(247,248,252,0.97) 40%, rgba(247,248,252,0.72) 100%)" }} />
 
           {/* Aurora glows */}
           <div className="absolute top-0 left-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] pointer-events-none"
@@ -100,9 +100,9 @@ export default function Home() {
           {/* Chess grid */}
           <div className="absolute right-0 top-0 bottom-0 w-2/5 pointer-events-none hidden lg:block"
             style={{
-              backgroundImage: "repeating-conic-gradient(rgba(255,255,255,0.016) 0% 25%, transparent 0% 50%)",
+              backgroundImage: "repeating-conic-gradient(rgba(61,109,121,0.06) 0% 25%, transparent 0% 50%)",
               backgroundSize: "52px 52px",
-              maskImage: "linear-gradient(to left, rgba(0,0,0,0.4), transparent)",
+              maskImage: "linear-gradient(to left, rgba(0,0,0,0.5), transparent)",
             }} />
 
           {/* Floating chess pieces */}
@@ -136,7 +136,7 @@ export default function Home() {
               <h1 className="display-hero-syne mb-5 sm:mb-7">
                 <SplitText
                   text="Where"
-                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-white"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-[#0f1624]"
                   delay={0.1}
                   stagger={0.04}
                 />
@@ -148,7 +148,7 @@ export default function Home() {
                 />
                 <SplitText
                   text="Are Forged"
-                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-white/80"
+                  className="block text-[42px] sm:text-5xl md:text-6xl lg:text-[88px] font-black text-[#0f1624]/70"
                   delay={0.6}
                   stagger={0.03}
                 />
@@ -156,7 +156,7 @@ export default function Home() {
 
               {/* Subtitle */}
               <LineReveal delay={1.0}>
-                <p className="text-[#e0e2ee]/70 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed max-w-xl">
+                <p className="text-[#0f1624]/60 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed max-w-xl">
                   Challenge rivals with a private invite code or duel face-to-face.
                   Track your ELO, analyse every move, and rise through the ranks.
                 </p>
@@ -181,9 +181,9 @@ export default function Home() {
                   onClick={() => setLocation(player ? "/leaderboard" : "/auth")}
                   className="flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold transition-all w-full sm:w-auto"
                   style={{
-                    background: "rgba(61,109,121,0.08)",
-                    border: "1px solid rgba(61,109,121,0.25)",
-                    color: "#e0e2ee",
+                    background: "rgba(61,109,121,0.07)",
+                    border: "1px solid rgba(61,109,121,0.22)",
+                    color: "#0f1624",
                     backdropFilter: "blur(8px)",
                   }}
                 >
@@ -243,7 +243,7 @@ export default function Home() {
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <ScrollReveal delay={0}>
           <div className="py-4 mb-16 overflow-hidden"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+            style={{ borderTop: "1px solid rgba(61,109,121,0.1)", borderBottom: "1px solid rgba(61,109,121,0.1)" }}>
             <Marquee
               items={CHESS_TERMS}
               speed={30}
@@ -260,7 +260,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="flex items-end justify-between mb-8">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>
                   Choose Your Battle
                 </h2>
                 <p className="text-sm text-muted-foreground mt-2">Two warriors. One board. Your rules.</p>
@@ -279,10 +279,10 @@ export default function Home() {
                 className="relative overflow-hidden rounded-2xl cursor-pointer h-full"
                 style={{
                   background: hoveredMode === "local"
-                    ? "radial-gradient(ellipse at 25% 75%, rgba(214,157,102,0.18) 0%, rgba(6,8,16,0.97) 65%)"
-                    : "radial-gradient(ellipse at 25% 75%, rgba(214,157,102,0.08) 0%, rgba(6,8,16,0.97) 65%)",
-                  border: hoveredMode === "local" ? "1px solid rgba(214,157,102,0.38)" : "1px solid rgba(214,157,102,0.16)",
-                  boxShadow: hoveredMode === "local" ? "0 0 80px rgba(214,157,102,0.12)" : "none",
+                    ? "radial-gradient(ellipse at 25% 75%, rgba(214,157,102,0.14) 0%, rgba(255,255,255,0.98) 65%)"
+                    : "radial-gradient(ellipse at 25% 75%, rgba(214,157,102,0.06) 0%, rgba(255,255,255,0.98) 65%)",
+                  border: hoveredMode === "local" ? "1px solid rgba(214,157,102,0.38)" : "1px solid rgba(214,157,102,0.18)",
+                  boxShadow: hoveredMode === "local" ? "0 8px 60px rgba(214,157,102,0.14)" : "0 2px 16px rgba(0,0,0,0.05)",
                 }}
                 onClick={() => setLocation("/play")}
                 onMouseEnter={() => setHoveredMode("local")}
@@ -304,13 +304,13 @@ export default function Home() {
                   >♞</motion.div>
                   <div>
                     <div className="flex items-center flex-wrap gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Local Duel</h3>
+                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>Local Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
                         style={{ background: "rgba(214,157,102,0.1)", color: "#d69d66", border: "1px solid rgba(214,157,102,0.22)" }}>
                         Same Device
                       </span>
                     </div>
-                    <p className="text-sm leading-relaxed" style={{ color: "#e0e2ee" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "#526070" }}>
                       Two players share one screen. Pass the board between moves. No internet. Just two minds.
                     </p>
                   </div>
@@ -343,10 +343,10 @@ export default function Home() {
                 className="relative overflow-hidden rounded-2xl cursor-pointer h-full"
                 style={{
                   background: hoveredMode === "invite"
-                    ? "radial-gradient(ellipse at 75% 25%, rgba(61,109,121,0.18) 0%, rgba(6,8,16,0.97) 65%)"
-                    : "radial-gradient(ellipse at 75% 25%, rgba(61,109,121,0.08) 0%, rgba(6,8,16,0.97) 65%)",
-                  border: hoveredMode === "invite" ? "1px solid rgba(61,109,121,0.4)" : "1px solid rgba(61,109,121,0.16)",
-                  boxShadow: hoveredMode === "invite" ? "0 0 80px rgba(61,109,121,0.14)" : "none",
+                    ? "radial-gradient(ellipse at 75% 25%, rgba(61,109,121,0.14) 0%, rgba(255,255,255,0.98) 65%)"
+                    : "radial-gradient(ellipse at 75% 25%, rgba(61,109,121,0.06) 0%, rgba(255,255,255,0.98) 65%)",
+                  border: hoveredMode === "invite" ? "1px solid rgba(61,109,121,0.4)" : "1px solid rgba(61,109,121,0.18)",
+                  boxShadow: hoveredMode === "invite" ? "0 8px 60px rgba(61,109,121,0.12)" : "0 2px 16px rgba(0,0,0,0.05)",
                 }}
                 onClick={() => setLocation("/play")}
                 onMouseEnter={() => setHoveredMode("invite")}
@@ -368,13 +368,13 @@ export default function Home() {
                   >♛</motion.div>
                   <div>
                     <div className="flex items-center flex-wrap gap-2.5 mb-2">
-                      <h3 className="text-xl font-black text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Invite to Duel</h3>
+                      <h3 className="text-xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>Invite to Duel</h3>
                       <span className="text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"
                         style={{ background: "rgba(61,109,121,0.1)", color: "#3d6d79", border: "1px solid rgba(61,109,121,0.25)" }}>
                         Online
                       </span>
                     </div>
-                    <p className="text-sm leading-relaxed" style={{ color: "#e0e2ee" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "#526070" }}>
                       Generate a private room code, share it with your rival, and play from anywhere in real-time.
                     </p>
                   </div>
@@ -411,7 +411,7 @@ export default function Home() {
           {/* Features — 3 cols */}
           <section className="lg:col-span-3">
             <ScrollReveal>
-              <h2 className="text-2xl font-black mb-8 text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <h2 className="text-2xl font-black mb-8 text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Platform Features
               </h2>
             </ScrollReveal>
@@ -438,7 +438,7 @@ export default function Home() {
           <section className="lg:col-span-2">
             <ScrollReveal delay={0.15}>
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Top Players</h2>
+                <h2 className="text-2xl font-black text-[#0f1624]" style={{ fontFamily: "'Playfair Display', serif" }}>Top Players</h2>
                 <Link href="/leaderboard"
                   className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors font-medium">
                   Full table <ArrowRight className="w-3.5 h-3.5" />
@@ -449,13 +449,13 @@ export default function Home() {
             <ScrollReveal delay={0.2}>
               <div className="rounded-2xl overflow-hidden"
                 style={{
-                  background: "rgba(12,14,26,0.85)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "rgba(255,255,255,0.92)",
+                  border: "1px solid rgba(61,109,121,0.1)",
                   backdropFilter: "blur(20px)",
                 }}>
-                <div className="divide-y divide-white/[0.04]">
+                <div className="divide-y divide-black/[0.05]">
                   {(topPlayers ?? []).slice(0, 5).map((p: any, i: number) => (
-                    <motion.div key={p.playerId} whileHover={{ backgroundColor: "rgba(255,255,255,0.025)" }}>
+                    <motion.div key={p.playerId} whileHover={{ backgroundColor: "rgba(61,109,121,0.04)" }}>
                       <Link
                         href={`/profile/${p.playerId}`}
                         className="flex items-center gap-3 px-5 py-4 transition-all group cursor-pointer"
@@ -471,7 +471,7 @@ export default function Home() {
                             i === 0
                               ? { background: "rgba(214,157,102,0.15)", border: "1px solid rgba(214,157,102,0.3)", color: "#d69d66" }
                               : i === 1
-                              ? { background: "rgba(224,226,238,0.1)", border: "1px solid rgba(224,226,238,0.22)", color: "#e0e2ee" }
+                              ? { background: "rgba(61,109,121,0.08)", border: "1px solid rgba(61,109,121,0.2)", color: "#3d6d79" }
                               : i === 2
                               ? { background: "rgba(214,157,102,0.08)", border: "1px solid rgba(214,157,102,0.2)", color: "#d69d66" }
                               : { background: "rgba(61,109,121,0.08)", border: "1px solid rgba(61,109,121,0.2)", color: "#3d6d79" }
@@ -504,7 +504,7 @@ export default function Home() {
                     <p className="text-muted-foreground text-sm">Be the first on the board</p>
                   </div>
                 )}
-                <div className="px-5 py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+                <div className="px-5 py-3" style={{ borderTop: "1px solid rgba(61,109,121,0.08)" }}>
                   <Link href="/leaderboard" className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 font-medium">
                     View all rankings <ArrowRight className="w-3 h-3" />
                   </Link>
@@ -520,9 +520,9 @@ export default function Home() {
         <ScrollReveal delay={0.1}>
           <section className="relative overflow-hidden rounded-2xl px-5 sm:px-8 md:px-16 py-12 md:py-16 text-center mb-2"
             style={{
-              background: "#060810",
-              border: "1px solid rgba(61,109,121,0.15)",
-              boxShadow: "0 0 100px rgba(61,109,121,0.05) inset",
+              background: "#ffffff",
+              border: "1px solid rgba(61,109,121,0.12)",
+              boxShadow: "0 0 80px rgba(61,109,121,0.04) inset, 0 4px 24px rgba(0,0,0,0.05)",
             }}>
 
             {/* Aurora gradient */}
@@ -541,7 +541,7 @@ export default function Home() {
                 }} />
               <div className="absolute inset-0"
                 style={{
-                  backgroundImage: "repeating-conic-gradient(rgba(255,255,255,0.012) 0% 25%, transparent 0% 50%)",
+                  backgroundImage: "repeating-conic-gradient(rgba(61,109,121,0.03) 0% 25%, transparent 0% 50%)",
                   backgroundSize: "48px 48px",
                 }} />
             </div>
@@ -555,7 +555,7 @@ export default function Home() {
               >
                 ♔
               </motion.div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0f1624] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Ready to Prove Your Worth?
               </h2>
               <p className="text-muted-foreground mb-9 max-w-md mx-auto text-sm leading-relaxed">

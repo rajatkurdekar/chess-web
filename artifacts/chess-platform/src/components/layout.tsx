@@ -24,10 +24,10 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* ── Premium Navbar ── */}
         <header className="sticky top-0 z-50"
           style={{
-            background: "rgba(6,8,16,0.88)",
+            background: "rgba(247,248,252,0.92)",
             backdropFilter: "blur(28px)",
             WebkitBackdropFilter: "blur(28px)",
-            borderBottom: "1px solid rgba(255,255,255,0.05)",
+            borderBottom: "1px solid rgba(61,109,121,0.1)",
           }}>
 
           {/* Gold top line */}
@@ -55,9 +55,9 @@ export function Layout({ children }: { children: ReactNode }) {
                 </div>
               </div>
               <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}>
-                <span style={{ color: "#E2E8F4" }}>Chess</span>
+                <span style={{ color: "#0f1624" }}>Chess</span>
                 <span style={{
-                  background: "linear-gradient(135deg, #818CF8, #C084FC, #F472B6)",
+                  background: "linear-gradient(135deg, #3d6d79, #d69d66)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -75,7 +75,7 @@ export function Layout({ children }: { children: ReactNode }) {
                     href={href}
                     className={cn(
                       "relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                      isActive ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-white/[0.04]"
+                      isActive ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-black/[0.04]"
                     )}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -98,8 +98,8 @@ export function Layout({ children }: { children: ReactNode }) {
               {player ? (
                 <Link
                   href={`/profile/${player.id}`}
-                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-white/[0.04] transition-all cursor-pointer"
-                  style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-black/[0.04] transition-all cursor-pointer"
+                  style={{ border: "1px solid rgba(61,109,121,0.12)" }}
                 >
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0"
                     style={{
@@ -147,9 +147,9 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* ── Mobile Bottom Nav ── */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50"
           style={{
-            background: "rgba(6,8,16,0.96)",
+            background: "rgba(247,248,252,0.96)",
             backdropFilter: "blur(24px)",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid rgba(61,109,121,0.1)",
           }}>
           <div className="flex items-center justify-around h-16 px-2">
             {NAV_LINKS.map(({ href, label, icon: Icon }) => {
@@ -191,13 +191,13 @@ export function Layout({ children }: { children: ReactNode }) {
         </nav>
 
         {/* ── Footer ── */}
-        <footer className="hidden md:block" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "rgba(6,8,16,0.5)" }}>
+        <footer className="hidden md:block" style={{ borderTop: "1px solid rgba(61,109,121,0.08)", background: "rgba(247,248,252,0.9)" }}>
           <div className="max-w-7xl mx-auto px-5 py-6 flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.35, letterSpacing: "-0.02em" }}>
-                <span style={{ color: "#E2E8F4" }}>Chess</span>
+              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: "0.85rem", opacity: 0.45, letterSpacing: "-0.02em" }}>
+                <span style={{ color: "#0f1624" }}>Chess</span>
                 <span style={{
-                  background: "linear-gradient(135deg, #818CF8, #C084FC, #F472B6)",
+                  background: "linear-gradient(135deg, #3d6d79, #d69d66)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
