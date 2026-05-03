@@ -181,10 +181,7 @@ export default function Auth() {
               <TabsList className="grid w-full grid-cols-2 mb-5 rounded-xl p-1"
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
                 <TabsTrigger value="login"
-                  className="rounded-lg text-sm font-semibold data-[state=active]:text-foreground data-[state=inactive]:text-muted-foreground"
-                  style={{
-                    ["--tw-ring-shadow" as any]: "none",
-                  }}>
+                  className="rounded-lg text-sm font-semibold data-[state=active]:text-foreground data-[state=inactive]:text-muted-foreground ring-0 shadow-none">
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger value="register"
