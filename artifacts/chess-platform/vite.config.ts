@@ -23,6 +23,31 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/")) {
+            return "vendor-react";
+          }
+          if (id.includes("node_modules/framer-motion")) {
+            return "vendor-motion";
+          }
+          if (id.includes("node_modules/chess.js")) {
+            return "vendor-chess";
+          }
+          if (id.includes("node_modules/@radix-ui")) {
+            return "vendor-radix";
+          }
+          if (id.includes("node_modules/@tanstack")) {
+            return "vendor-query";
+          }
+          if (id.includes("node_modules/socket.io-client") || id.includes("node_modules/engine.io-client")) {
+            return "vendor-socket";
+          }
+        },
+      },
+    },
   },
   server: {
     port,
