@@ -3,6 +3,12 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm --filter @workspace/chess-platform run build",
   "outputDirectory": "artifacts/chess-platform/dist/public",
+  "build": {
+    "env": {
+      "PORT": "3000",
+      "BASE_PATH": "/"
+    }
+  },
   "functions": {
     "api/index.ts": {
       "maxDuration": 60
